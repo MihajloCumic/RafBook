@@ -1,0 +1,3 @@
+09:43:20 - Starting servent [28|localhost|1100]
+09:43:20 - Pausing for 50000 ms
+09:43:20 - First node in Chord system.
