@@ -20,6 +20,7 @@ public class DHTPutCommand implements CLICommand {
 			try {
 				key = Integer.parseInt(splitArgs[0]);
 				value = Integer.parseInt(splitArgs[1]);
+				int chordKey = ChordState.chordHash(key);
 				
 				if (key < 0 || key >= ChordState.CHORD_SIZE) {
 					throw new NumberFormatException();
@@ -28,7 +29,7 @@ public class DHTPutCommand implements CLICommand {
 					throw new NumberFormatException();
 				}
 				
-				AppConfig.chordState.putValue(key, value);
+				AppConfig.chordState.putValue(chordKey, value);
 			} catch (NumberFormatException e) {
 				AppConfig.timestampedErrorPrint("Invalid key and value pair. Both should be ints. 0 <= key <= " + ChordState.CHORD_SIZE
 						+ ". 0 <= value.");

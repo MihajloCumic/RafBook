@@ -1,6 +1,7 @@
 package cli.command;
 
 import app.AppConfig;
+import app.ChordState;
 
 public class DHTGetCommand implements CLICommand {
 
@@ -13,8 +14,8 @@ public class DHTGetCommand implements CLICommand {
 	public void execute(String args) {
 		try {
 			int key = Integer.parseInt(args);
-			
-			int val = AppConfig.chordState.getValue(key);
+			int chordKey = ChordState.chordHash(key);
+			int val = AppConfig.chordState.getValue(chordKey);
 			
 			if (val == -2) {
 				AppConfig.timestampedStandardPrint("Please wait...");
