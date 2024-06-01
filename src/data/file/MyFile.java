@@ -3,18 +3,24 @@ package data.file;
 import data.enums.FileType;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class MyFile {
-    private String name;
+
     private byte[] content;
     private FileType fileType;
 
-    public MyFile(String name, byte[] content, FileType fileType) {
-        this.name = name;
+    public MyFile(byte[] content, FileType fileType) {
         this.content = content;
         this.fileType = fileType;
     }
+
+    public MyFile(String stringRepresentation) throws IllegalArgumentException{
+        String[] parts = stringRepresentation.split("\\uFFFF", 2);
+        if(parts.length != 2) throw new IllegalArgumentException("Invalid argument.");
+        this.content = parts[0].getBytes(StandardCharsets.US_ASCII);
+        this.fileType = getTypeFromString(parts[1]);
+    }
+
     public String getExtensionAsString(){
         if(fileType.equals(FileType.TYPE_TEXT)) return ".txt";
         if(fileType.equals(FileType.TYPE_JPG)) return ".jpg";
@@ -22,13 +28,13 @@ public class MyFile {
         return "";
     }
 
-    public String getName() {
-        return name;
+    private FileType getTypeFromString(String extension){
+        if(extension.equals(".txt")) return FileType.TYPE_TEXT;
+        if(extension.equals(".jpg")) return FileType.TYPE_JPG;
+        if(extension.equals(".png")) return FileType.TYPE_PNG;
+        throw new IllegalArgumentException("No such extension");
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public byte[] getContent() {
         return content;
@@ -48,10 +54,7 @@ public class MyFile {
 
     @Override
     public String toString() {
-        return "MyFile{" +
-                "name='" + name + '\'' +
-                ", content=" + new String(content, StandardCharsets.US_ASCII) +
-                ", fileType=" + fileType +
-                '}';
+        String asciiContent = new String(content, StandardCharsets.US_ASCII);
+        return asciiContent + "\\uFFFF" + getExtensionAsString();
     }
 }

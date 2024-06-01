@@ -2,6 +2,7 @@ package cli.command;
 
 import app.AppConfig;
 import app.ChordState;
+import data.result.GetResult;
 
 public class DHTGetCommand implements CLICommand {
 
@@ -15,14 +16,14 @@ public class DHTGetCommand implements CLICommand {
 		try {
 			int key = Integer.parseInt(args);
 			int chordKey = ChordState.chordHash(key);
-			int val = AppConfig.chordState.getValue(chordKey);
+			GetResult result = AppConfig.chordState.getValue(chordKey);
 			
-			if (val == -2) {
+			if (result.getResStatus() == -2) {
 				AppConfig.timestampedStandardPrint("Please wait...");
-			} else if (val == -1) {
+			} else if (result.getResStatus() == -1) {
 				AppConfig.timestampedStandardPrint("No such key: " + key);
 			} else {
-				AppConfig.timestampedStandardPrint(key + ": " + val);
+				AppConfig.timestampedStandardPrint(key + ": " + result.getMyFile());
 			}
 		} catch (NumberFormatException e) {
 			AppConfig.timestampedErrorPrint("Invalid argument for dht_get: " + args + ". Should be key, which is an int.");

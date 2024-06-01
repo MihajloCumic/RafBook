@@ -4,6 +4,8 @@ import java.util.Map;
 
 import app.AppConfig;
 import app.ServentInfo;
+import data.file.MyFile;
+import data.result.GetResult;
 import servent.message.AskGetMessage;
 import servent.message.Message;
 import servent.message.MessageType;
@@ -24,15 +26,16 @@ public class AskGetHandler implements MessageHandler {
 			try {
 				int key = Integer.parseInt(clientMessage.getMessageText());
 				if (AppConfig.chordState.isKeyMine(key)) {
-					Map<Integer, Integer> valueMap = AppConfig.chordState.getValueMap(); 
-					int value = -1;
+					Map<Integer, MyFile> valueMap = AppConfig.chordState.getValueMap();
+					GetResult getResult = new GetResult(-1);
 					
 					if (valueMap.containsKey(key)) {
-						value = valueMap.get(key);
+						getResult.setMyFile(valueMap.get(key));
+						getResult.setResStatus(1);
 					}
 					
 					TellGetMessage tgm = new TellGetMessage(AppConfig.myServentInfo.getListenerPort(), clientMessage.getSenderPort(),
-															key, value);
+															key, getResult.toString());
 					MessageUtil.sendMessage(tgm);
 				} else {
 					ServentInfo nextNode = AppConfig.chordState.getNextNodeForKey(key);

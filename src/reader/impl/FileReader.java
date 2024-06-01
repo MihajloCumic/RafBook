@@ -7,24 +7,14 @@ import reader.Reader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class FileReader implements Reader {
     @Override
-    public MyFile readFile(String location, String name) {
-        Path path = Paths.get(location);
-        if(isTextFile(path)){
+    public MyFile readFile(Path path) {
+        if(isTextFile(path) || isImageFile(path)){
             try {
                 byte[] content = getFileContent(path);
-                return new MyFile(name, content, FileType.TYPE_TEXT);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        if(isImageFile(path)){
-            try {
-                byte[] content = getFileContent(path);
-                return new MyFile(name, content, getImageFileType(path));
+                return new MyFile(content, getFileType(path));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -44,8 +34,9 @@ public class FileReader implements Reader {
         return  fileName.endsWith(".jpg") || fileName.endsWith(".png");
     }
 
-    private FileType getImageFileType(Path path){
+    private FileType getFileType(Path path){
         String fileName = path.getFileName().toString();
+        if(fileName.endsWith(".txt")) return FileType.TYPE_TEXT;
         if(fileName.endsWith(".jpg")) return FileType.TYPE_JPG;
         if (fileName.endsWith(".png")) return FileType.TYPE_PNG;
         return null;

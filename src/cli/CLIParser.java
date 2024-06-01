@@ -13,6 +13,7 @@ import cli.command.InfoCommand;
 import cli.command.PauseCommand;
 import cli.command.StopCommand;
 import cli.command.SuccessorInfo;
+import reader.impl.FileReader;
 import servent.SimpleServentListener;
 
 /**
@@ -47,7 +48,7 @@ public class CLIParser implements Runnable, Cancellable {
 		commandList.add(new PauseCommand());
 		commandList.add(new SuccessorInfo());
 		commandList.add(new DHTGetCommand());
-		commandList.add(new DHTPutCommand());
+		commandList.add(new DHTPutCommand(new FileReader()));
 		commandList.add(new StopCommand(this, listener));
 	}
 	

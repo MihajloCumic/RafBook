@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import data.file.MyFile;
+import data.result.GetResult;
 import servent.message.AskGetMessage;
 import servent.message.PutMessage;
 import servent.message.WelcomeMessage;
@@ -53,7 +55,7 @@ public class ChordState {
 	//we DO NOT use this to send messages, but only to construct the successor table
 	private List<ServentInfo> allNodeInfo;
 	
-	private Map<Integer, Integer> valueMap;
+	private Map<Integer, MyFile> valueMap;
 	
 	public ChordState() {
 		this.chordLevel = 1;
@@ -122,14 +124,14 @@ public class ChordState {
 		this.predecessorInfo = newNodeInfo;
 	}
 
-	public Map<Integer, Integer> getValueMap() {
+	public Map<Integer, MyFile> getValueMap() {
 		return valueMap;
 	}
-	
-	public void setValueMap(Map<Integer, Integer> valueMap) {
+
+	public void setValueMap(Map<Integer, MyFile> valueMap) {
 		this.valueMap = valueMap;
 	}
-	
+
 	public boolean isCollision(int chordId) {
 		if (chordId == AppConfig.myServentInfo.getChordId()) {
 			return true;
@@ -311,12 +313,12 @@ public class ChordState {
 	/**
 	 * The Chord put operation. Stores locally if key is ours, otherwise sends it on.
 	 */
-	public void putValue(int key, int value) {
+	public void putValue(int key, MyFile value) {
 		if (isKeyMine(key)) {
 			valueMap.put(key, value);
 		} else {
 			ServentInfo nextNode = getNextNodeForKey(key);
-			PutMessage pm = new PutMessage(AppConfig.myServentInfo.getListenerPort(), nextNode.getListenerPort(), key, value);
+			PutMessage pm = new PutMessage(AppConfig.myServentInfo.getListenerPort(), nextNode.getListenerPort(), key, value.toString());
 			MessageUtil.sendMessage(pm);
 		}
 	}
@@ -329,12 +331,12 @@ public class ChordState {
 	 *			<li>-2 if we asked someone else</li>
 	 *		   </ul>
 	 */
-	public int getValue(int key) {
+	public GetResult getValue(int key) {
 		if (isKeyMine(key)) {
 			if (valueMap.containsKey(key)) {
-				return valueMap.get(key);
+				return new GetResult(1, valueMap.get(key));
 			} else {
-				return -1;
+				return new GetResult(-1);
 			}
 		}
 		
@@ -342,7 +344,7 @@ public class ChordState {
 		AskGetMessage agm = new AskGetMessage(AppConfig.myServentInfo.getListenerPort(), nextNode.getListenerPort(), String.valueOf(key));
 		MessageUtil.sendMessage(agm);
 		
-		return -2;
+		return new GetResult(-2);
 	}
 
 }
