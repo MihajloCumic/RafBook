@@ -1,6 +1,7 @@
 package servent.handler;
 
 import app.AppConfig;
+import data.result.GetResult;
 import servent.message.Message;
 import servent.message.MessageType;
 
@@ -15,13 +16,15 @@ public class TellGetHandler implements MessageHandler {
 	@Override
 	public void run() {
 		if (clientMessage.getMessageType() == MessageType.TELL_GET) {
-			String parts[] = clientMessage.getMessageText().split(":");
+			String[] parts = clientMessage.getMessageText().split(":");
+			System.out.println(parts[0]);
+			System.out.println(parts[1]);
 			
 			if (parts.length == 2) {
 				try {
 					int key = Integer.parseInt(parts[0]);
-					int value = Integer.parseInt(parts[1]);
-					if (value == -1) {
+					GetResult getResult = new GetResult(parts[1]);
+					if (getResult.getResStatus() == -1) {
 						AppConfig.timestampedStandardPrint("No such key: " + key);
 					} else {
 						AppConfig.timestampedStandardPrint(clientMessage.getMessageText());

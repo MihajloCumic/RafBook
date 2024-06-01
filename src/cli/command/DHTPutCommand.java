@@ -34,10 +34,6 @@ public class DHTPutCommand implements CLICommand {
 				Path path = validateAndGetPath(splitArgs[1]);
 				MyFile file = fileReader.readFile(path);
 				int chordKey = ChordState.chordHash(key);
-				
-				if (key < 0 || key >= ChordState.CHORD_SIZE) {
-					throw new NumberFormatException();
-				}
 				AppConfig.chordState.putValue(chordKey, file);
 			} catch (NumberFormatException e) {
 				AppConfig.timestampedErrorPrint("Invalid key and value pair. Both should be ints. 0 <= key <= " + ChordState.CHORD_SIZE

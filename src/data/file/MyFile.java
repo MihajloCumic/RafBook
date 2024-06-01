@@ -1,5 +1,6 @@
 package data.file;
 
+import app.AppConfig;
 import data.enums.FileType;
 
 import java.nio.charset.StandardCharsets;
@@ -15,8 +16,12 @@ public class MyFile {
     }
 
     public MyFile(String stringRepresentation) throws IllegalArgumentException{
-        String[] parts = stringRepresentation.split("\\uFFFF", 2);
+        AppConfig.timestampedErrorPrint("usao");
+        String[] parts = stringRepresentation.split("\uFFFF", 2);
+        AppConfig.timestampedErrorPrint(parts[0]);
+        AppConfig.timestampedErrorPrint(parts[1]);
         if(parts.length != 2) throw new IllegalArgumentException("Invalid argument.");
+        AppConfig.timestampedErrorPrint("prosao bez problema if");
         this.content = parts[0].getBytes(StandardCharsets.US_ASCII);
         this.fileType = getTypeFromString(parts[1]);
     }
@@ -55,6 +60,6 @@ public class MyFile {
     @Override
     public String toString() {
         String asciiContent = new String(content, StandardCharsets.US_ASCII);
-        return asciiContent + "\\uFFFF" + getExtensionAsString();
+        return asciiContent + "\uFFFF" + getExtensionAsString();
     }
 }
