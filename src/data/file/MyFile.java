@@ -9,21 +9,20 @@ public class MyFile {
 
     private byte[] content;
     private FileType fileType;
+    private boolean isPrivate;
 
-    public MyFile(byte[] content, FileType fileType) {
+    public MyFile(byte[] content, FileType fileType, boolean isPrivate) {
         this.content = content;
         this.fileType = fileType;
+        this.isPrivate = isPrivate;
     }
 
     public MyFile(String stringRepresentation) throws IllegalArgumentException{
-        AppConfig.timestampedErrorPrint("usao");
-        String[] parts = stringRepresentation.split("\uFFFF", 2);
-        AppConfig.timestampedErrorPrint(parts[0]);
-        AppConfig.timestampedErrorPrint(parts[1]);
-        if(parts.length != 2) throw new IllegalArgumentException("Invalid argument.");
-        AppConfig.timestampedErrorPrint("prosao bez problema if");
+        String[] parts = stringRepresentation.split("\uFFFF", 3);
+        if(parts.length != 3) throw new IllegalArgumentException("Invalid argument.");
         this.content = parts[0].getBytes(StandardCharsets.US_ASCII);
         this.fileType = getTypeFromString(parts[1]);
+        this.isPrivate = parts[2].equals("true");
     }
 
     public String getExtensionAsString(){
@@ -57,9 +56,17 @@ public class MyFile {
         this.fileType = fileType;
     }
 
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
+
     @Override
     public String toString() {
         String asciiContent = new String(content, StandardCharsets.US_ASCII);
-        return asciiContent + "\uFFFF" + getExtensionAsString();
+        return asciiContent + "\uFFFF" + getExtensionAsString() + "\uFFFF" + isPrivate;
     }
 }

@@ -6,10 +6,7 @@ import app.AppConfig;
 import app.ServentInfo;
 import data.file.MyFile;
 import data.result.GetResult;
-import servent.message.AskGetMessage;
-import servent.message.Message;
-import servent.message.MessageType;
-import servent.message.TellGetMessage;
+import servent.message.*;
 import servent.message.util.MessageUtil;
 
 public class AskGetHandler implements MessageHandler {
@@ -31,6 +28,11 @@ public class AskGetHandler implements MessageHandler {
 					
 					if (valueMap.containsKey(key)) {
 						getResult.setMyFile(valueMap.get(key));
+						if(getResult.getMyFile().isPrivate()){
+							AccessDeniedMessage adm = new AccessDeniedMessage(AppConfig.myServentInfo.getListenerPort(), clientMessage.getSenderPort(), "Cannot acces file with id: " + key);
+							MessageUtil.sendMessage(adm);
+							return;
+						}
 						getResult.setResStatus(1);
 					}
 					

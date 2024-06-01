@@ -27,12 +27,14 @@ public class DHTPutCommand implements CLICommand {
 	public void execute(String args) {
 		String[] splitArgs = args.split(" ");
 		
-		if (splitArgs.length == 2) {
+		if (splitArgs.length == 3) {
+			boolean isPrivate = splitArgs[0].equals("private");
 			int key = 0;
 			try {
-				key = Integer.parseInt(splitArgs[0]);
-				Path path = validateAndGetPath(splitArgs[1]);
+				key = Integer.parseInt(splitArgs[1]);
+				Path path = validateAndGetPath(splitArgs[2]);
 				MyFile file = fileReader.readFile(path);
+				file.setPrivate(isPrivate);
 				int chordKey = ChordState.chordHash(key);
 				AppConfig.chordState.putValue(chordKey, file);
 			} catch (NumberFormatException e) {

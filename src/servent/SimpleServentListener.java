@@ -9,15 +9,7 @@ import java.util.concurrent.Executors;
 
 import app.AppConfig;
 import app.Cancellable;
-import servent.handler.AskGetHandler;
-import servent.handler.MessageHandler;
-import servent.handler.NewNodeHandler;
-import servent.handler.NullHandler;
-import servent.handler.PutHandler;
-import servent.handler.SorryHandler;
-import servent.handler.TellGetHandler;
-import servent.handler.UpdateHandler;
-import servent.handler.WelcomeHandler;
+import servent.handler.*;
 import servent.message.Message;
 import servent.message.util.MessageUtil;
 
@@ -66,29 +58,35 @@ public class SimpleServentListener implements Runnable, Cancellable {
 				 * because that way is much simpler and less error prone.
 				 */
 				switch (clientMessage.getMessageType()) {
-				case NEW_NODE:
-					messageHandler = new NewNodeHandler(clientMessage);
-					break;
-				case WELCOME:
-					messageHandler = new WelcomeHandler(clientMessage);
-					break;
-				case SORRY:
-					messageHandler = new SorryHandler(clientMessage);
-					break;
-				case UPDATE:
-					messageHandler = new UpdateHandler(clientMessage);
-					break;
-				case PUT:
-					messageHandler = new PutHandler(clientMessage);
-					break;
-				case ASK_GET:
-					messageHandler = new AskGetHandler(clientMessage);
-					break;
-				case TELL_GET:
-					messageHandler = new TellGetHandler(clientMessage);
-					break;
-				case POISON:
-					break;
+					case NEW_NODE:
+						messageHandler = new NewNodeHandler(clientMessage);
+						break;
+					case WELCOME:
+						messageHandler = new WelcomeHandler(clientMessage);
+						break;
+					case SORRY:
+						messageHandler = new SorryHandler(clientMessage);
+						break;
+					case UPDATE:
+						messageHandler = new UpdateHandler(clientMessage);
+						break;
+					case PUT:
+						messageHandler = new PutHandler(clientMessage);
+						break;
+					case ASK_GET:
+						messageHandler = new AskGetHandler(clientMessage);
+						break;
+					case TELL_GET:
+						messageHandler = new TellGetHandler(clientMessage);
+						break;
+					case POISON:
+						break;
+					case ACCESS_DENIED:
+						messageHandler = new AccessDeniedHandler(clientMessage);
+						break;
+					case ASK_VIEW_FILES:
+						messageHandler = new AskViewFilesHandler(clientMessage);
+						break;
 				}
 				
 				threadPool.submit(messageHandler);

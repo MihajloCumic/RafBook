@@ -14,7 +14,7 @@ public class FileReader implements Reader {
         if(isTextFile(path) || isImageFile(path)){
             try {
                 byte[] content = getFileContent(path);
-                return new MyFile(content, getFileType(path));
+                return new MyFile(content, getFileType(path), false);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
