@@ -1,6 +1,10 @@
 package cli.command;
 
 import app.AppConfig;
+import app.ChordState;
+import app.ServentInfo;
+import servent.message.AskViewFilesMessage;
+import servent.message.util.MessageUtil;
 
 public class ViewFilesCommand implements CLICommand{
     @Override
@@ -12,13 +16,17 @@ public class ViewFilesCommand implements CLICommand{
     public void execute(String args) {
         String[] splitArgs = args.split(":", 2);
         if(splitArgs.length != 2) AppConfig.timestampedErrorPrint("Invalid arguments for view-files command.");
+
         try{
-            Integer port = Integer.parseInt(splitArgs[1]);
+            int port = Integer.parseInt(splitArgs[1]);
             if(port == AppConfig.myServentInfo.getListenerPort()){
-                AppConfig.timestampedStandardPrint("To sam ja.");
+                AppConfig.timestampedStandardPrint("On this node localhost:" + port + ":\n" + AppConfig.chordState.getValueMap().keySet().toString());
                 return;
             }
-            AppConfig.timestampedStandardPrint("Nisam ja.");
+            int chordId = ChordState.chordHash(port);
+            ServentInfo nextNode = AppConfig.chordState.getNextNodeForKey(chordId);
+            AskViewFilesMessage avfm = new AskViewFilesMessage(AppConfig.myServentInfo.getListenerPort(),nextNode.getListenerPort(), port + "");
+            MessageUtil.sendMessage(avfm);
         }catch (NumberFormatException e){
             AppConfig.timestampedErrorPrint("Port must be a number.");
         }
