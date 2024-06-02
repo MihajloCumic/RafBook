@@ -28,7 +28,7 @@ public class TellGetHandler implements MessageHandler {
 					if (getResult.getResStatus() == -1) {
 						AppConfig.timestampedStandardPrint("No such key: " + key);
 					} else {
-						AppConfig.timestampedStandardPrint("Key: " + parts[0] + "\n\t->" + parts[1]);
+						AppConfig.timestampedStandardPrint(resultAsString(getResult, key));
 					}
 				} catch (NumberFormatException e) {
 					AppConfig.timestampedErrorPrint("Got TELL_GET message with bad text: " + clientMessage.getMessageText());
@@ -41,6 +41,10 @@ public class TellGetHandler implements MessageHandler {
 		} else {
 			AppConfig.timestampedErrorPrint("Tell get handler got a message that is not TELL_GET");
 		}
+	}
+
+	private String resultAsString(GetResult getResult, int key){
+        return "Key: " + key + " , name: " + getResult.getMyFile().getName();
 	}
 
 }
