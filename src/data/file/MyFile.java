@@ -19,7 +19,10 @@ public class MyFile implements Serializable {
     }
 
     public String getExtensionAsString(){
-        return "." + name.split("\\.", 2)[1];
+        if(fileType ==  FileType.TYPE_TEXT) return ".txt";
+        if(fileType ==  FileType.TYPE_JPG) return ".jpg";
+        if(fileType ==  FileType.TYPE_PNG) return ".png";
+        throw new RuntimeException("No extension found");
     }
 
     public byte[] getContent() {

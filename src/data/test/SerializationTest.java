@@ -2,6 +2,7 @@ package data.test;
 
 import data.enums.FileType;
 import data.file.MyFile;
+import data.result.GetResult;
 import data.util.SerializationUtil;
 
 import java.io.IOException;
@@ -18,7 +19,13 @@ public class SerializationTest {
             String str = SerializationUtil.serialize(myFile);
             System.out.println(str);
             MyFile myFile1 = (MyFile) SerializationUtil.deserialize(str);
-            System.out.println(myFile1.toString());
+            System.out.println(myFile1.getExtensionAsString());
+            System.out.println("Test2::::::::::::::::::::::");
+            GetResult getResult = new GetResult(-1, null);
+            String str1 = SerializationUtil.serialize(getResult);
+            System.out.println(str1);
+            GetResult getResult1 = (GetResult) SerializationUtil.deserialize(str1);
+            System.out.println(getResult1.getResStatus());
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {

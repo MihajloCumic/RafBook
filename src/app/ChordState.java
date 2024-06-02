@@ -12,6 +12,7 @@ import java.util.Map;
 
 import data.file.MyFile;
 import data.result.GetResult;
+import data.util.SerializationUtil;
 import servent.message.AskGetMessage;
 import servent.message.PutMessage;
 import servent.message.WelcomeMessage;
@@ -318,8 +319,13 @@ public class ChordState {
 			valueMap.put(key, value);
 		} else {
 			ServentInfo nextNode = getNextNodeForKey(key);
-			PutMessage pm = new PutMessage(AppConfig.myServentInfo.getListenerPort(), nextNode.getListenerPort(), key, value.toString());
-			MessageUtil.sendMessage(pm);
+            try {
+                String fileAsString = SerializationUtil.serialize(value);
+				PutMessage pm = new PutMessage(AppConfig.myServentInfo.getListenerPort(), nextNode.getListenerPort(), key, fileAsString);
+				MessageUtil.sendMessage(pm);
+            } catch (IOException e) {
+                AppConfig.timestampedErrorPrint(e.getLocalizedMessage());
+            }
 		}
 	}
 	
