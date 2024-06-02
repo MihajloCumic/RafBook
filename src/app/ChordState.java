@@ -336,7 +336,7 @@ public class ChordState {
 			if (valueMap.containsKey(key)) {
 				return new GetResult(1, valueMap.get(key));
 			} else {
-				return new GetResult(-1);
+				return new GetResult(-1, null);
 			}
 		}
 		
@@ -344,7 +344,7 @@ public class ChordState {
 		AskGetMessage agm = new AskGetMessage(AppConfig.myServentInfo.getListenerPort(), nextNode.getListenerPort(), String.valueOf(key));
 		MessageUtil.sendMessage(agm);
 		
-		return new GetResult(-2);
+		return new GetResult(-2, null);
 	}
 
 }

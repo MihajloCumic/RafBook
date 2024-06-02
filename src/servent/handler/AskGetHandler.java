@@ -1,11 +1,13 @@
 package servent.handler;
 
+import java.io.IOException;
 import java.util.Map;
 
 import app.AppConfig;
 import app.ServentInfo;
 import data.file.MyFile;
 import data.result.GetResult;
+import data.util.SerializationUtil;
 import servent.message.*;
 import servent.message.util.MessageUtil;
 
@@ -24,7 +26,7 @@ public class AskGetHandler implements MessageHandler {
 				int key = Integer.parseInt(clientMessage.getMessageText());
 				if (AppConfig.chordState.isKeyMine(key)) {
 					Map<Integer, MyFile> valueMap = AppConfig.chordState.getValueMap();
-					GetResult getResult = new GetResult(-1);
+					GetResult getResult = new GetResult(-1, null);
 					
 					if (valueMap.containsKey(key)) {
 						getResult.setMyFile(valueMap.get(key));
@@ -35,9 +37,9 @@ public class AskGetHandler implements MessageHandler {
 						}
 						getResult.setResStatus(1);
 					}
-					
+					String getResultStr = SerializationUtil.serialize(getResult);
 					TellGetMessage tgm = new TellGetMessage(AppConfig.myServentInfo.getListenerPort(), clientMessage.getSenderPort(),
-															key, getResult.toString());
+															key, getResultStr);
 					MessageUtil.sendMessage(tgm);
 				} else {
 					ServentInfo nextNode = AppConfig.chordState.getNextNodeForKey(key);
@@ -46,9 +48,11 @@ public class AskGetHandler implements MessageHandler {
 				}
 			} catch (NumberFormatException e) {
 				AppConfig.timestampedErrorPrint("Got ask get with bad text: " + clientMessage.getMessageText());
-			}
-			
-		} else {
+			} catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        } else {
 			AppConfig.timestampedErrorPrint("Ask get handler got a message that is not ASK_GET");
 		}
 

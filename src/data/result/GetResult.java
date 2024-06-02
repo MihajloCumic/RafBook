@@ -2,33 +2,17 @@ package data.result;
 
 import data.file.MyFile;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
-public class GetResult {
+public class GetResult implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int resStatus;
     private MyFile myFile;
-
-    public GetResult(int resStatus) {
-        this.resStatus = resStatus;
-    }
 
     public GetResult(int resStatus, MyFile myFile) {
         this.resStatus = resStatus;
         this.myFile = myFile;
-    }
-
-    public GetResult(String stringRepresentation){
-        String[] parts = stringRepresentation.split(":", 2);
-        if(parts.length == 2){
-            this.resStatus = Integer.parseInt(parts[0]);
-            this.myFile = new MyFile(parts[1]);
-            return;
-        }
-        if(parts.length == 1){
-            this.resStatus = Integer.parseInt(parts[0]);
-            return;
-        }
-        throw new IllegalArgumentException("Invalid argument.");
     }
 
     public int getResStatus() {
@@ -45,10 +29,5 @@ public class GetResult {
 
     public void setMyFile(MyFile myFile) {
         this.myFile = myFile;
-    }
-
-    @Override
-    public String toString() {
-        return resStatus + ":" + myFile.toString();
     }
 }

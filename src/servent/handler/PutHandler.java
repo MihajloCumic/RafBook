@@ -3,8 +3,11 @@ package servent.handler;
 import app.AppConfig;
 import app.ChordState;
 import data.file.MyFile;
+import data.util.SerializationUtil;
 import servent.message.Message;
 import servent.message.MessageType;
+
+import java.io.IOException;
 
 public class PutHandler implements MessageHandler {
 
@@ -24,12 +27,14 @@ public class PutHandler implements MessageHandler {
 				try {
 					key = Integer.parseInt(splitText[0]);
 					String value = splitText[1];
-					MyFile file = new MyFile(value);
+					MyFile file = (MyFile) SerializationUtil.deserialize(value);
 					AppConfig.chordState.putValue(key, file);
 				} catch (NumberFormatException e) {
 					AppConfig.timestampedErrorPrint("Got put message with bad text: " + clientMessage.getMessageText());
-				}
-			} else {
+				} catch (IOException | ClassNotFoundException e) {
+					AppConfig.timestampedErrorPrint(e.getMessage());
+                }
+            } else {
 				AppConfig.timestampedErrorPrint("Got put message with bad text: " + clientMessage.getMessageText());
 			}
 			
