@@ -7,6 +7,7 @@ import java.util.Scanner;
 import app.AppConfig;
 import app.Cancellable;
 import cli.command.*;
+import heartbeat.Heartbeat;
 import reader.impl.FileReader;
 import servent.SimpleServentListener;
 
@@ -35,7 +36,7 @@ public class CLIParser implements Runnable, Cancellable {
 	
 	private final List<CLICommand> commandList;
 	
-	public CLIParser(SimpleServentListener listener) {
+	public CLIParser(SimpleServentListener listener, Heartbeat heartbeat) {
 		this.commandList = new ArrayList<>();
 		
 		commandList.add(new InfoCommand());
@@ -43,7 +44,7 @@ public class CLIParser implements Runnable, Cancellable {
 		commandList.add(new SuccessorInfo());
 		commandList.add(new DHTGetCommand());
 		commandList.add(new DHTPutCommand(new FileReader()));
-		commandList.add(new StopCommand(this, listener));
+		commandList.add(new StopCommand(this, listener, heartbeat));
 		commandList.add(new DataInfoCommand());
 		commandList.add(new ViewFilesCommand());
 	}

@@ -47,20 +47,21 @@ public class ServentMain {
 		}
 		
 		AppConfig.timestampedStandardPrint("Starting servent " + AppConfig.myServentInfo);
-		
+
 		SimpleServentListener simpleListener = new SimpleServentListener();
 		Thread listenerThread = new Thread(simpleListener);
 		listenerThread.start();
-		
-		CLIParser cliParser = new CLIParser(simpleListener);
+
+		Heartbeat heartbeat = new Heartbeat(3000);
+
+		CLIParser cliParser = new CLIParser(simpleListener, heartbeat);
 		Thread cliThread = new Thread(cliParser);
 		cliThread.start();
-		
+
 		ServentInitializer serventInitializer = new ServentInitializer();
 		Thread initializerThread = new Thread(serventInitializer);
 		initializerThread.start();
 
-		Heartbeat heartbeat = new Heartbeat(3000);
 		Thread heartbeatThread = new Thread(heartbeat);
 		heartbeatThread.start();
 		
