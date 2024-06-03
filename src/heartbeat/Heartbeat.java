@@ -9,13 +9,10 @@ import servent.message.util.MessageUtil;
 
 public class Heartbeat implements Runnable, Cancellable {
     private volatile boolean working = true;
-    private int nextNodePort;
-    private volatile boolean hasResponded = false;
     private final int lowWaitingTime;
 
     public Heartbeat( int lowWaitingTime){
         this.lowWaitingTime = lowWaitingTime;
-        this.nextNodePort = -1;
 
     }
 
@@ -27,7 +24,7 @@ public class Heartbeat implements Runnable, Cancellable {
     @Override
     public void run() {
         while(working){
-            nextNodePort = AppConfig.chordState.getNextServentPort();
+            int nextNodePort = HeartbeatSharedData.getInstance().getServentPort();
             try {
                 if( nextNodePort != -1){
                     sendHeartbeat();
@@ -43,20 +40,20 @@ public class Heartbeat implements Runnable, Cancellable {
     }
 
     private void checkHealth(){
-
+        HeartbeatSharedData heartbeatSharedData = HeartbeatSharedData.getInstance();
+        boolean hasResponded = heartbeatSharedData.getHasResponded();
+        int nextNodePort = heartbeatSharedData.getServentPort();
         if(!hasResponded){
-            //poslati dodanty proveru
             AppConfig.timestampedStandardPrint("Nije odgovorio cvor: " + nextNodePort);
         }else{
             AppConfig.timestampedStandardPrint("Odgovorio je cvor.: " + nextNodePort);
-            //restartovanje mape
-           hasResponded = false;
+           heartbeatSharedData.setHasResponded(false);
         }
 
     }
 
     private void sendHeartbeat() throws InterruptedException {
-            HeartbeatRequestMessage hbr = new HeartbeatRequestMessage(AppConfig.myServentInfo.getListenerPort(), nextNodePort);
+            HeartbeatRequestMessage hbr = new HeartbeatRequestMessage(AppConfig.myServentInfo.getListenerPort(), HeartbeatSharedData.getInstance().getServentPort());
             MessageUtil.sendMessage(hbr);
 
     }
