@@ -13,6 +13,7 @@ public class ServentInfo implements Serializable {
 	private final String ipAddress;
 	private final int listenerPort;
 	private final int chordId;
+	private boolean isSuspicious = false;
 	
 	public ServentInfo(String ipAddress, int listenerPort) {
 		this.ipAddress = ipAddress;
@@ -31,7 +32,15 @@ public class ServentInfo implements Serializable {
 	public int getChordId() {
 		return chordId;
 	}
-	
+
+	public synchronized boolean isSuspicious() {
+		return isSuspicious;
+	}
+
+	public synchronized void setSuspicious(boolean suspicious) {
+		isSuspicious = suspicious;
+	}
+
 	@Override
 	public String toString() {
 		return "[" + chordId + "|" + ipAddress + "|" + listenerPort + "]";

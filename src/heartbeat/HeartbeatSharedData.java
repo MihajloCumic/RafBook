@@ -1,13 +1,21 @@
 package heartbeat;
 
 import app.AppConfig;
+import app.ServentInfo;
+
+import java.util.Map;
 
 public class HeartbeatSharedData {
     private static volatile HeartbeatSharedData instance;
     private static final Object mutex = new Object();
     private int serventPort = -1;
     private boolean hasResponded = false;
+    private boolean isSuspicious =false;
+
+
     private HeartbeatSharedData(){}
+
+
     public static HeartbeatSharedData getInstance(){
         HeartbeatSharedData result = instance;
         if(instance == null){
@@ -36,5 +44,13 @@ public class HeartbeatSharedData {
 
     public synchronized void setHasResponded(boolean hasResponded){
         this.hasResponded = hasResponded;
+    }
+    public synchronized boolean getIsSuspicious(){
+        return isSuspicious;
+    }
+
+    public synchronized void setIsSuspicious(boolean isSuspicious){
+        this.isSuspicious = isSuspicious;
+        notifyAll();
     }
 }

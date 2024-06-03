@@ -4,6 +4,7 @@ package heartbeat;
 import app.AppConfig;
 import app.Cancellable;
 import servent.message.HeartbeatRequestMessage;
+import servent.message.RecheckNodeMessage;
 import servent.message.util.MessageUtil;
 
 
@@ -26,7 +27,7 @@ public class Heartbeat implements Runnable, Cancellable {
         while(working){
             int nextNodePort = HeartbeatSharedData.getInstance().getServentPort();
             try {
-                if( nextNodePort != -1){
+                if( nextNodePort != -1 && AppConfig.myServentInfo.getListenerPort() != nextNodePort){
                     sendHeartbeat();
                     Thread.sleep(lowWaitingTime);
                     checkHealth();
@@ -44,6 +45,29 @@ public class Heartbeat implements Runnable, Cancellable {
         boolean hasResponded = heartbeatSharedData.getHasResponded();
         int nextNodePort = heartbeatSharedData.getServentPort();
         if(!hasResponded){
+            heartbeatSharedData.setIsSuspicious(true);
+            synchronized (HeartbeatSharedData.getInstance()){
+                if(HeartbeatSharedData.getInstance().getIsSuspicious()){
+                    AppConfig.timestampedErrorPrint("Is supsipoius");
+                    RecheckNodeMessage rnm = new RecheckNodeMessage(AppConfig.myServentInfo.getListenerPort(), nextNodePort, nextNodePort + "");
+                    MessageUtil.sendMessage(rnm);
+                    try {
+                        AppConfig.timestampedErrorPrint("waiting");
+                        HeartbeatSharedData.getInstance().wait(5000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if(heartbeatSharedData.getIsSuspicious()){
+                        AppConfig.timestampedErrorPrint("mora se reaguje");
+                        AppConfig.chordState.removeNode(heartbeatSharedData.getServentPort());
+                        heartbeatSharedData.setIsSuspicious(false);
+                        heartbeatSharedData.setHasResponded(false);
+                        heartbeatSharedData.setServentPOrt(-1);
+                    }else{
+                        AppConfig.timestampedErrorPrint("Sve okej");
+                    }
+                }
+            }
             AppConfig.timestampedStandardPrint("Nije odgovorio cvor: " + nextNodePort);
         }else{
             AppConfig.timestampedStandardPrint("Odgovorio je cvor.: " + nextNodePort);

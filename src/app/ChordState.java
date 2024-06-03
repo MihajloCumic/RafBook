@@ -270,6 +270,19 @@ public class ChordState {
 		
 	}
 
+	public void removeNode(int nodePortToRemove){
+		ServentInfo serventInfoToRemove = null;
+		for(ServentInfo serventInfo: allNodeInfo){
+			if(serventInfo.getListenerPort() == nodePortToRemove){
+				serventInfoToRemove = serventInfo;
+				break;
+			}
+		}
+		if(serventInfoToRemove == null) return;
+		allNodeInfo.remove(serventInfoToRemove);
+		updateAllNodesAndSuccessorTable();
+	}
+
 	/**
 	 * This method constructs an ordered list of all nodes. They are ordered by chordId, starting from this node.
 	 * Once the list is created, we invoke <code>updateSuccessorTable()</code> to do the rest of the work.
@@ -277,19 +290,22 @@ public class ChordState {
 	 */
 	public void addNodes(List<ServentInfo> newNodes) {
 		allNodeInfo.addAll(newNodes);
-		
+		updateAllNodesAndSuccessorTable();
+	}
+
+	private void updateAllNodesAndSuccessorTable(){
 		allNodeInfo.sort(new Comparator<ServentInfo>() {
-			
+
 			@Override
 			public int compare(ServentInfo o1, ServentInfo o2) {
 				return o1.getChordId() - o2.getChordId();
 			}
-			
+
 		});
-		
+
 		List<ServentInfo> newList = new ArrayList<>();
 		List<ServentInfo> newList2 = new ArrayList<>();
-		
+
 		int myId = AppConfig.myServentInfo.getChordId();
 		for (ServentInfo serventInfo : allNodeInfo) {
 			if (serventInfo.getChordId() < myId) {
@@ -298,7 +314,7 @@ public class ChordState {
 				newList.add(serventInfo);
 			}
 		}
-		
+
 		allNodeInfo.clear();
 		allNodeInfo.addAll(newList);
 		allNodeInfo.addAll(newList2);
@@ -307,7 +323,7 @@ public class ChordState {
 		} else {
 			predecessorInfo = newList.get(newList.size()-1);
 		}
-		
+
 		updateSuccessorTable();
 	}
 
