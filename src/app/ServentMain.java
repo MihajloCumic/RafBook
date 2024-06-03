@@ -1,6 +1,7 @@
 package app;
 
 import cli.CLIParser;
+import heartbeat.Heartbeat;
 import servent.SimpleServentListener;
 
 /**
@@ -58,6 +59,10 @@ public class ServentMain {
 		ServentInitializer serventInitializer = new ServentInitializer();
 		Thread initializerThread = new Thread(serventInitializer);
 		initializerThread.start();
+
+		Heartbeat heartbeat = new Heartbeat(3000);
+		Thread heartbeatThread = new Thread(heartbeat);
+		heartbeatThread.start();
 		
 	}
 }

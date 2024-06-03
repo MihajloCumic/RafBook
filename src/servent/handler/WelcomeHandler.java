@@ -1,6 +1,7 @@
 package servent.handler;
 
 import app.AppConfig;
+import heartbeat.Heartbeat;
 import servent.message.Message;
 import servent.message.MessageType;
 import servent.message.UpdateMessage;

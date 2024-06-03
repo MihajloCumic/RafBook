@@ -90,6 +90,12 @@ public class SimpleServentListener implements Runnable, Cancellable {
 					case TELL_VIEW_FILES:
 						messageHandler = new TellViewFilesHandler(clientMessage);
 						break;
+					case HEARTBEAT_REQUEST:
+						messageHandler = new HeartbeatRequestHandler(clientMessage);
+						break;
+					case HEARTBEAT_RESPONSE:
+						messageHandler = new HeartbeatResponseHandler(clientMessage);
+						break;
 				}
 				
 				threadPool.submit(messageHandler);

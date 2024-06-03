@@ -3,27 +3,19 @@ package heartbeat;
 
 import app.AppConfig;
 import app.Cancellable;
-import app.ServentInfo;
 import servent.message.HeartbeatRequestMessage;
 import servent.message.util.MessageUtil;
-
-import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class Heartbeat implements Runnable, Cancellable {
     private volatile boolean working = true;
-    private final List<ServentInfo> servents;
-    private final Map<Integer, Boolean> toMonitorMap;
+    private int nextNodePort;
+    private volatile boolean hasResponded = false;
     private final int lowWaitingTime;
 
     public Heartbeat( int lowWaitingTime){
-        this.toMonitorMap = new ConcurrentHashMap<>();
-        this.servents = new CopyOnWriteArrayList<>();
         this.lowWaitingTime = lowWaitingTime;
+        this.nextNodePort = -1;
 
     }
 
@@ -35,13 +27,14 @@ public class Heartbeat implements Runnable, Cancellable {
     @Override
     public void run() {
         while(working){
+            nextNodePort = AppConfig.chordState.getNextServentPort();
             try {
-                if(!servents.isEmpty()){
-                    sendHeartbeats();
-                    wait(lowWaitingTime);
+                if( nextNodePort != -1){
+                    sendHeartbeat();
+                    Thread.sleep(lowWaitingTime);
                     checkHealth();
                 }
-                wait(5000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -50,26 +43,21 @@ public class Heartbeat implements Runnable, Cancellable {
     }
 
     private void checkHealth(){
-        for(ServentInfo servent: servents){
-            int chordId = servent.getChordId();
-            if(toMonitorMap.containsKey(chordId)){
-                if(!toMonitorMap.get(chordId)){
-                    //poslati dodanty proveru
-                    AppConfig.timestampedStandardPrint("Nije odgovorio cvor: " + servent.getListenerPort());
-                }else{
-                    //restartovanje mape
-                    toMonitorMap.put(chordId, false);
-                }
-            }
+
+        if(!hasResponded){
+            //poslati dodanty proveru
+            AppConfig.timestampedStandardPrint("Nije odgovorio cvor: " + nextNodePort);
+        }else{
+            AppConfig.timestampedStandardPrint("Odgovorio je cvor.: " + nextNodePort);
+            //restartovanje mape
+           hasResponded = false;
         }
 
     }
 
-    private void sendHeartbeats() throws InterruptedException {
-        for(ServentInfo servent: servents){
-            HeartbeatRequestMessage hbr = new HeartbeatRequestMessage(AppConfig.myServentInfo.getListenerPort(), servent.getListenerPort());
+    private void sendHeartbeat() throws InterruptedException {
+            HeartbeatRequestMessage hbr = new HeartbeatRequestMessage(AppConfig.myServentInfo.getListenerPort(), nextNodePort);
             MessageUtil.sendMessage(hbr);
-            toMonitorMap.put(servent.getChordId(), false);
-        }
+
     }
 }

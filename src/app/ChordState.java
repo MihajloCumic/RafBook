@@ -353,4 +353,15 @@ public class ChordState {
 		return new GetResult(-2, null);
 	}
 
+	public int getNextServentPort(){
+		if(successorTable == null || successorTable.length == 0){
+			return -1;
+		}
+		if(successorTable[0] == null){
+			return -1;
+		}
+		return successorTable[0].getListenerPort();
+
+	}
+
 }
