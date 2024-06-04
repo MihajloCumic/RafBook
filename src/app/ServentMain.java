@@ -4,6 +4,10 @@ import cli.CLIParser;
 import heartbeat.Heartbeat;
 import servent.SimpleServentListener;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 /**
  * Describes the procedure for starting a single Servent
  *
@@ -34,6 +38,12 @@ public class ServentMain {
 		}
 		
 		AppConfig.readConfig(serventListFile, serventId);
+
+		boolean createdFolder = createServentFolder();
+		if(!createdFolder){
+			AppConfig.timestampedErrorPrint("Could not create folder for this servent.");
+			System.exit(-1);
+		}
 		
 		try {
 			portNumber = AppConfig.myServentInfo.getListenerPort();
@@ -66,4 +76,14 @@ public class ServentMain {
 		heartbeatThread.start();
 		
 	}
+
+	private static boolean createServentFolder(){
+		Path path = AppConfig.root;
+        try {
+            Files.createDirectories(path);
+			return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
 }

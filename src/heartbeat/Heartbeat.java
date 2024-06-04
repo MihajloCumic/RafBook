@@ -58,7 +58,7 @@ public class Heartbeat implements Runnable, Cancellable {
 
                     try {
                         AppConfig.timestampedErrorPrint("waiting");
-                        HeartbeatSharedData.getInstance().wait(5000);
+                        HeartbeatSharedData.getInstance().wait(10000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
@@ -74,7 +74,6 @@ public class Heartbeat implements Runnable, Cancellable {
                     }
                 }
             }
-            AppConfig.timestampedStandardPrint("Nije odgovorio cvor: " + nextNodePort);
         }else{
             AppConfig.timestampedStandardPrint("Odgovorio je cvor.: " + nextNodePort);
            heartbeatSharedData.setHasResponded(false);
@@ -83,7 +82,7 @@ public class Heartbeat implements Runnable, Cancellable {
     }
 
     private void sendRecheckMessage(int nextNodePort){
-        int receiverNodePort = AppConfig.chordState.getRandomHealthyNodePort(nextNodePort);
+        int receiverNodePort = AppConfig.chordState.getRandomHealthyNodePort();
         if(receiverNodePort == -1){
             AppConfig.timestampedErrorPrint("No healthy nodes to send recheck message.");
             return;

@@ -381,12 +381,20 @@ public class ChordState {
 
 	}
 
-	public int getRandomHealthyNodePort(int port){
+	public int getRandomHealthyNodePort(){
 		for(ServentInfo serventInfo: allNodeInfo){
-			if(serventInfo.isSuspicious() || serventInfo.getChordId() == AppConfig.myServentInfo.getChordId() || serventInfo.getListenerPort() == port) continue;
+			if(serventInfo.isSuspicious() || serventInfo.getChordId() == AppConfig.myServentInfo.getChordId()) continue;
 			return serventInfo.getListenerPort();
 		}
 		return -1;
+	}
+
+	public void setIsSuspiciousByPort(int port){
+		for(ServentInfo serventInfo: allNodeInfo){
+			if(serventInfo.getListenerPort() == port){
+				serventInfo.setSuspicious(true);
+			}
+		}
 	}
 
 }

@@ -3,6 +3,8 @@ package app;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,6 +21,7 @@ public class AppConfig {
 	 * Convenience access for this servent's information
 	 */
 	public static ServentInfo myServentInfo;
+	public static Path root;
 	
 	/**
 	 * Print a message to stdout with a timestamp
@@ -114,6 +117,8 @@ public class AppConfig {
 			timestampedErrorPrint("Problem reading " + portProperty + ". Exiting...");
 			System.exit(0);
 		}
+
+		root = Paths.get(properties.getProperty("root") + "/folder" + serventId);
 		
 		myServentInfo = new ServentInfo("localhost", serventPort);
 	}

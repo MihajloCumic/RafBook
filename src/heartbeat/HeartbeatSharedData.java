@@ -1,9 +1,6 @@
 package heartbeat;
 
 import app.AppConfig;
-import app.ServentInfo;
-
-import java.util.Map;
 
 public class HeartbeatSharedData {
     private static volatile HeartbeatSharedData instance;
@@ -51,6 +48,7 @@ public class HeartbeatSharedData {
 
     public synchronized void setIsSuspicious(boolean isSuspicious){
         this.isSuspicious = isSuspicious;
+        AppConfig.chordState.setIsSuspiciousByPort(serventPort);
         notifyAll();
     }
 }
