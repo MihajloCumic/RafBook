@@ -1,5 +1,7 @@
 package app;
 
+import data.backup.BackupMap;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,6 +24,7 @@ public class AppConfig {
 	 */
 	public static ServentInfo myServentInfo;
 	public static Path root;
+	public static BackupMap backupMap;
 	
 	/**
 	 * Print a message to stdout with a timestamp
@@ -119,6 +122,7 @@ public class AppConfig {
 		}
 
 		root = Paths.get(properties.getProperty("root") + "/folder" + serventId);
+		backupMap = new BackupMap(root);
 		
 		myServentInfo = new ServentInfo("localhost", serventPort);
 	}

@@ -36,6 +36,7 @@ public class DHTPutCommand implements CLICommand {
 				MyFile file = fileReader.readFile(path);
 				file.setPrivate(isPrivate);
 				int chordKey = ChordState.chordHash(key);
+				file.setChordId(chordKey);
 				AppConfig.chordState.putValue(chordKey, file);
 			} catch (NumberFormatException e) {
 				AppConfig.timestampedErrorPrint("Invalid key and value pair. Both should be ints. 0 <= key <= " + ChordState.CHORD_SIZE
@@ -46,6 +47,10 @@ public class DHTPutCommand implements CLICommand {
 		} else {
 			AppConfig.timestampedErrorPrint("Invalid arguments for put");
 		}
+
+	}
+
+	private void makeBackup(MyFile file){
 
 	}
 

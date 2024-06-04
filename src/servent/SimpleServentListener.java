@@ -105,6 +105,9 @@ public class SimpleServentListener implements Runnable, Cancellable {
 					case TELL_HEALTH_CHECK:
 						messageHandler = new TellHealthcheckHandler(clientMessage);
 						break;
+					case BACKUP:
+						messageHandler = new BackupHandler(clientMessage);
+						break;
 				}
 				
 				threadPool.submit(messageHandler);

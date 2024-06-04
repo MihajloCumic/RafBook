@@ -10,6 +10,7 @@ public class MyFile implements Serializable {
     private String name;
     private FileType fileType;
     private boolean isPrivate;
+    private int chordId;
 
     public MyFile(byte[] content, String name, FileType fileType, boolean isPrivate) {
         this.content = content;
@@ -23,6 +24,14 @@ public class MyFile implements Serializable {
         if(fileType ==  FileType.TYPE_JPG) return ".jpg";
         if(fileType ==  FileType.TYPE_PNG) return ".png";
         throw new RuntimeException("No extension found");
+    }
+
+    public int getChordId() {
+        return chordId;
+    }
+
+    public void setChordId(int chordId) {
+        this.chordId = chordId;
     }
 
     public byte[] getContent() {

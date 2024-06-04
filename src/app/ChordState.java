@@ -15,6 +15,7 @@ import data.file.MyFile;
 import data.result.GetResult;
 import data.util.SerializationUtil;
 import servent.message.AskGetMessage;
+import servent.message.BackupMessage;
 import servent.message.PutMessage;
 import servent.message.WelcomeMessage;
 import servent.message.util.MessageUtil;
@@ -334,6 +335,13 @@ public class ChordState {
 	public void putValue(int key, MyFile value) {
 		if (isKeyMine(key)) {
 			valueMap.put(key, value);
+            try {
+                String messageText = SerializationUtil.serialize(value);
+				BackupMessage backupMessage = new BackupMessage(AppConfig.myServentInfo.getListenerPort(), getRandomHealthyNodePort(), messageText);
+				MessageUtil.sendMessage(backupMessage);
+            } catch (IOException e) {
+                AppConfig.timestampedErrorPrint("Could not serialize file: " + value.getName());
+            }
 		} else {
 			ServentInfo nextNode = getNextNodeForKey(key);
             try {
