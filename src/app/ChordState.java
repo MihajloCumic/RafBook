@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import data.file.MyFile;
 import data.result.GetResult;
@@ -378,6 +379,14 @@ public class ChordState {
 		}
 		return successorTable[0].getListenerPort();
 
+	}
+
+	public int getRandomHealthyNodePort(int port){
+		for(ServentInfo serventInfo: allNodeInfo){
+			if(serventInfo.isSuspicious() || serventInfo.getChordId() == AppConfig.myServentInfo.getChordId() || serventInfo.getListenerPort() == port) continue;
+			return serventInfo.getListenerPort();
+		}
+		return -1;
 	}
 
 }

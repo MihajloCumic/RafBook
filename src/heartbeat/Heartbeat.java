@@ -42,21 +42,27 @@ public class Heartbeat implements Runnable, Cancellable {
 
     private void checkHealth(){
         HeartbeatSharedData heartbeatSharedData = HeartbeatSharedData.getInstance();
+
         boolean hasResponded = heartbeatSharedData.getHasResponded();
         int nextNodePort = heartbeatSharedData.getServentPort();
+
         if(!hasResponded){
+
             heartbeatSharedData.setIsSuspicious(true);
+
             synchronized (HeartbeatSharedData.getInstance()){
+
                 if(HeartbeatSharedData.getInstance().getIsSuspicious()){
-                    AppConfig.timestampedErrorPrint("Is supsipoius");
-                    RecheckNodeMessage rnm = new RecheckNodeMessage(AppConfig.myServentInfo.getListenerPort(), nextNodePort, nextNodePort + "");
-                    MessageUtil.sendMessage(rnm);
+
+                    sendRecheckMessage(nextNodePort);
+
                     try {
                         AppConfig.timestampedErrorPrint("waiting");
                         HeartbeatSharedData.getInstance().wait(5000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+
                     if(heartbeatSharedData.getIsSuspicious()){
                         AppConfig.timestampedErrorPrint("mora se reaguje");
                         AppConfig.chordState.removeNode(heartbeatSharedData.getServentPort());
@@ -74,6 +80,16 @@ public class Heartbeat implements Runnable, Cancellable {
            heartbeatSharedData.setHasResponded(false);
         }
 
+    }
+
+    private void sendRecheckMessage(int nextNodePort){
+        int receiverNodePort = AppConfig.chordState.getRandomHealthyNodePort(nextNodePort);
+        if(receiverNodePort == -1){
+            AppConfig.timestampedErrorPrint("No healthy nodes to send recheck message.");
+            return;
+        }
+        RecheckNodeMessage rnm = new RecheckNodeMessage(AppConfig.myServentInfo.getListenerPort(), receiverNodePort, nextNodePort + "");
+        MessageUtil.sendMessage(rnm);
     }
 
     private void sendHeartbeat() throws InterruptedException {

@@ -96,6 +96,15 @@ public class SimpleServentListener implements Runnable, Cancellable {
 					case HEARTBEAT_RESPONSE:
 						messageHandler = new HeartbeatResponseHandler(clientMessage);
 						break;
+					case RECHECK_NODE:
+						messageHandler = new RecheckNodeHandler(clientMessage);
+						break;
+					case ASK_HEALTH_CHECK:
+						messageHandler = new AskHealthcheckHandler(clientMessage);
+						break;
+					case TELL_HEALTH_CHECK:
+						messageHandler = new TellHealthcheckHandler(clientMessage);
+						break;
 				}
 				
 				threadPool.submit(messageHandler);

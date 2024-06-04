@@ -1,8 +1,10 @@
 package servent.handler;
 
 import app.AppConfig;
+import servent.message.AskHealthcheckMessage;
 import servent.message.Message;
 import servent.message.MessageType;
+import servent.message.util.MessageUtil;
 
 public class RecheckNodeHandler implements MessageHandler{
     private final Message clientMessage;
@@ -14,7 +16,11 @@ public class RecheckNodeHandler implements MessageHandler{
     @Override
     public void run() {
         if(clientMessage.getMessageType() == MessageType.RECHECK_NODE){
-            AppConfig.timestampedErrorPrint("NOde: " + clientMessage.getMessageText() + " must rechek this node");
+            AppConfig.timestampedErrorPrint("Node: " + clientMessage.getMessageText() + " must rechek this node");
+            int port = Integer.parseInt(clientMessage.getMessageText());
+            AskHealthcheckMessage ahm = new AskHealthcheckMessage(clientMessage.getSenderPort(), port);
+            MessageUtil.sendMessage(ahm);
+
         }else{
             AppConfig.timestampedErrorPrint("Recheck node handler got message that is not RECHECK_NODE");
         }
