@@ -283,6 +283,7 @@ public class ChordState {
 		if(serventInfoToRemove == null) return;
 		allNodeInfo.remove(serventInfoToRemove);
 		updateAllNodesAndSuccessorTable();
+		AppConfig.backupMap.removeFromMyBackupLocations(ChordState.chordHash(nodePortToRemove));
 	}
 
 	/**
@@ -329,7 +330,7 @@ public class ChordState {
 		updateSuccessorTable();
 	}
 
-	/**
+	/**dht_get 2
 	 * The Chord put operation. Stores locally if key is ours, otherwise sends it on.
 	 */
 	public void putValue(int key, MyFile value) {
@@ -337,7 +338,13 @@ public class ChordState {
 			valueMap.put(key, value);
             try {
                 String messageText = SerializationUtil.serialize(value);
-				BackupMessage backupMessage = new BackupMessage(AppConfig.myServentInfo.getListenerPort(), getRandomHealthyNodePort(), messageText);
+
+				int backupNodePort = getRandomHealthyNodePort();
+				int backupNodeChordId = ChordState.chordHash(backupNodePort);
+
+				AppConfig.backupMap.addToMyBackupLocations(key, backupNodeChordId);
+
+				BackupMessage backupMessage = new BackupMessage(AppConfig.myServentInfo.getListenerPort(), backupNodePort, messageText);
 				MessageUtil.sendMessage(backupMessage);
             } catch (IOException e) {
                 AppConfig.timestampedErrorPrint("Could not serialize file: " + value.getName());
@@ -376,6 +383,14 @@ public class ChordState {
 		MessageUtil.sendMessage(agm);
 		
 		return new GetResult(-2, null);
+	}
+
+	public GetResult getMyFileBYChordId(int fileChordId){
+		if (valueMap.containsKey(fileChordId)) {
+			return new GetResult(1, valueMap.get(fileChordId));
+		} else {
+			return new GetResult(-1, null);
+		}
 	}
 
 	public int getNextServentPort(){
