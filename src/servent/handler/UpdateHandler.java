@@ -45,10 +45,13 @@ public class UpdateHandler implements MessageHandler {
 					allNodes.add(new ServentInfo("localhost", Integer.parseInt(port)));
 				}
 				AppConfig.chordState.addNodes(allNodes);
+				//logika za backup
 			}
 		} else {
 			AppConfig.timestampedErrorPrint("Update message handler got message that is not UPDATE");
 		}
 	}
+
+
 
 }

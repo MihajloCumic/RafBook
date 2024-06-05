@@ -2,6 +2,7 @@ package cli.command;
 
 import app.AppConfig;
 import app.ServentInfo;
+import data.backup.Backup;
 import data.file.MyFile;
 
 import java.util.List;
@@ -32,6 +33,17 @@ public class DataInfoCommand implements CLICommand{
         if(successors == null) return;
         for(int i = 0; i < successors.length; i++){
             System.out.println(successors[i].getChordId());
+        }
+        System.out.println("My file backups locations: ");
+        for(Map.Entry<Integer, Integer> entry: AppConfig.backupMap.getMyBackupLocations().entrySet()){
+            System.out.println("file: " + entry.getKey() + ", on node: " + entry.getValue());
+        }
+        System.out.println("Backups on this node: ");
+        for(Map.Entry<Integer, List<Backup>> entry: AppConfig.backupMap.getBackups().entrySet()){
+            System.out.println("Node  " + entry.getKey() + ":");
+            for(Backup backup: entry.getValue()){
+                System.out.println("\tfile: " + backup.getChordId());
+            }
         }
     }
 }

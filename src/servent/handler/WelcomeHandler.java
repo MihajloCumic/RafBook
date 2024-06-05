@@ -1,12 +1,16 @@
 package servent.handler;
 
 import app.AppConfig;
+import data.file.MyFile;
+import data.util.SerializationUtil;
 import heartbeat.Heartbeat;
-import servent.message.Message;
-import servent.message.MessageType;
-import servent.message.UpdateMessage;
-import servent.message.WelcomeMessage;
+import servent.message.*;
 import servent.message.util.MessageUtil;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class WelcomeHandler implements MessageHandler {
 
@@ -25,7 +29,20 @@ public class WelcomeHandler implements MessageHandler {
 			
 			UpdateMessage um = new UpdateMessage(AppConfig.myServentInfo.getListenerPort(), AppConfig.chordState.getNextNodePort(), "");
 			MessageUtil.sendMessage(um);
-			
+			//saljemo sve vrednosti cvorovima da ih uklone ako ih imaju sacuvane kao backup-ove
+			List<Integer> fileChordIds = new ArrayList<>();
+			for(Map.Entry<Integer, MyFile> entry: welcomeMsg.getValues().entrySet()){
+				fileChordIds.add(entry.getKey());
+			}
+            try {
+                String msg = SerializationUtil.serialize(fileChordIds);
+				AppConfig.timestampedErrorPrint("Sending rbm:\n"+ "sender: " + welcomeMsg.getSenderPort());
+				RemoveBackupsMessage rbm = new RemoveBackupsMessage(welcomeMsg.getSenderPort(), AppConfig.chordState.getNextNodePort(), msg);
+				MessageUtil.sendMessage(rbm);
+
+			} catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 		} else {
 			AppConfig.timestampedErrorPrint("Welcome handler got a message that is not WELCOME");
 		}

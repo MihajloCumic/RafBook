@@ -58,6 +58,21 @@ public class BackupMap {
         backups.remove(nodeChordId);
     }
 
+    public void removeBackupsForNode(int nodeChordId, List<Integer> fileChordIds){
+        if(backups.containsKey(nodeChordId)){
+            List<Backup> backupList = backups.get(nodeChordId);
+            List<Backup> newBackups = new ArrayList<>();
+            for(Backup backup: backupList){
+                if(fileChordIds.contains(backup.getChordId())) continue;
+                newBackups.add(backup);
+            }
+            backups.put(nodeChordId, newBackups);
+        }
+        for(Integer chordId: fileChordIds){
+            myBackupLocations.remove(chordId);
+        }
+    }
+
     public void addToMyBackupLocations(int fileChordId,int nodeChordId){
         myBackupLocations.put(fileChordId, nodeChordId);
     }
