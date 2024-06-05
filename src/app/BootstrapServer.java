@@ -98,8 +98,12 @@ public class BootstrapServer {
 					
 					activeServents.add(newServentPort);
 					newServentSocket.close();
+				} else if (message.equals("REMOVE")) {
+					int nodeToRemovePort = socketScanner.nextInt();
+					System.out.println("Removing " + nodeToRemovePort);
+					activeServents.remove(Integer.valueOf(nodeToRemovePort));
 				}
-				
+
 			} catch (SocketTimeoutException e) {
 				
 			} catch (IOException e) {

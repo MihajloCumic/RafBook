@@ -55,7 +55,7 @@ public class Heartbeat implements Runnable, Cancellable {
 
                 if(HeartbeatSharedData.getInstance().getIsSuspicious()){
 
-                    sendRecheckMessage(nextNodePort);
+                    boolean isSent = sendRecheckMessage(nextNodePort);
 
                     try {
                         AppConfig.timestampedErrorPrint("waiting");
@@ -64,34 +64,41 @@ public class Heartbeat implements Runnable, Cancellable {
                         throw new RuntimeException(e);
                     }
 
-                    if(heartbeatSharedData.getIsSuspicious()){
-                        AppConfig.timestampedErrorPrint("mora se reaguje");
-                        AppConfig.chordState.removeNode(heartbeatSharedData.getServentPort());
-                        heartbeatSharedData.setIsSuspicious(false);
-                        heartbeatSharedData.setHasResponded(false);
-                        heartbeatSharedData.setServentPOrt(-1);
-                        RemoveNodeMessage rnm = new RemoveNodeMessage(AppConfig.myServentInfo.getListenerPort(), AppConfig.chordState.getNextNodePort(), heartbeatSharedData.getServentPort() + "");
-                        MessageUtil.sendMessage(rnm);
-                    }else{
-                        AppConfig.timestampedErrorPrint("Sve okej");
-                    }
+                    removeNode(heartbeatSharedData);
+
                 }
             }
         }else{
-            AppConfig.timestampedStandardPrint("Odgovorio je cvor.: " + nextNodePort);
+           // AppConfig.timestampedStandardPrint("Odgovorio je cvor.: " + nextNodePort);
            heartbeatSharedData.setHasResponded(false);
         }
 
     }
 
-    private void sendRecheckMessage(int nextNodePort){
+    private void removeNode(HeartbeatSharedData heartbeatSharedData){
+        if(heartbeatSharedData.getIsSuspicious()){
+            AppConfig.timestampedErrorPrint("mora se reaguje");
+            int nodeToRemovePort = heartbeatSharedData.getServentPort();
+            AppConfig.chordState.removeNode(heartbeatSharedData.getServentPort());
+            heartbeatSharedData.setIsSuspicious(false);
+            heartbeatSharedData.setHasResponded(false);
+            heartbeatSharedData.setServentPOrt(-1);
+            RemoveNodeMessage rnm = new RemoveNodeMessage(AppConfig.myServentInfo.getListenerPort(), AppConfig.chordState.getNextNodePort(), nodeToRemovePort + "");
+            MessageUtil.sendMessage(rnm);
+        }else{
+            AppConfig.timestampedErrorPrint("Sve okej");
+        }
+    }
+
+    private boolean sendRecheckMessage(int nextNodePort){
         int receiverNodePort = AppConfig.chordState.getRandomHealthyNodePort();
         if(receiverNodePort == -1){
             AppConfig.timestampedErrorPrint("No healthy nodes to send recheck message.");
-            return;
+            return false;
         }
         RecheckNodeMessage rnm = new RecheckNodeMessage(AppConfig.myServentInfo.getListenerPort(), receiverNodePort, nextNodePort + "");
         MessageUtil.sendMessage(rnm);
+        return true;
     }
 
     private void sendHeartbeat() throws InterruptedException {

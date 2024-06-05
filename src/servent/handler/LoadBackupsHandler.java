@@ -28,6 +28,7 @@ public class LoadBackupsHandler implements MessageHandler{
                 List<Backup> backups = AppConfig.backupMap.getBackupForNode(nodeChordId);
                 if(backups != null && !backups.isEmpty()){
                     for(Backup backup: backups){
+                        AppConfig.timestampedStandardPrint("Lading backup:" + backup.getChordId());
                         MyFile myFile = backup.loadBackup();
                         AppConfig.chordState.putValue(myFile.getChordId(), myFile);
                     }
@@ -36,6 +37,7 @@ public class LoadBackupsHandler implements MessageHandler{
                 if(AppConfig.myServentInfo.getListenerPort() == clientMessage.getSenderPort()) return;
                 LoadBackupsMessage lbm = new LoadBackupsMessage(clientMessage.getSenderPort(), AppConfig.chordState.getNextNodePort(), clientMessage.getMessageText());
                 MessageUtil.sendMessage(lbm);
+                AppConfig.timestampedStandardPrint("Sent loadbackup message");
             }catch (NumberFormatException e){
                 AppConfig.timestampedErrorPrint(e.getLocalizedMessage());
             }

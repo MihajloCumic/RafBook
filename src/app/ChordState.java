@@ -114,7 +114,11 @@ public class ChordState {
 	public ServentInfo[] getSuccessorTable() {
 		return successorTable;
 	}
-	
+
+	public List<ServentInfo> getAllNodeInfo() {
+		return allNodeInfo;
+	}
+
 	public int getNextNodePort() {
 		return successorTable[0].getListenerPort();
 	}
@@ -220,8 +224,14 @@ public class ChordState {
 	}
 
 	private void updateSuccessorTable() {
+		//vezano za to kada ostane samo jedan cvor u sistemu
+		if(allNodeInfo.isEmpty()){
+			for(int i = 0; i< chordLevel; i++){
+				successorTable[i] = AppConfig.myServentInfo;
+			}
+			return;
+		}
 		//first node after me has to be successorTable[0]
-		
 		int currentNodeIndex = 0;
 		ServentInfo currentNode = allNodeInfo.get(currentNodeIndex);
 		successorTable[0] = currentNode;
@@ -324,7 +334,14 @@ public class ChordState {
 		if (newList2.size() > 0) {
 			predecessorInfo = newList2.get(newList2.size()-1);
 		} else {
-			predecessorInfo = newList.get(newList.size()-1);
+			//kada ostane 1 cvor u sistemu
+			if(newList.size() > 0){
+				predecessorInfo = newList.get(newList.size()-1);
+			}else {
+				predecessorInfo = AppConfig.myServentInfo;
+			}
+			//prethodna implementacija
+//			predecessorInfo = newList.get(newList.size()-1);
 		}
 
 		updateSuccessorTable();
