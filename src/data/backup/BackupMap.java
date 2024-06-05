@@ -47,6 +47,17 @@ public class BackupMap {
         backups.put(nodeChordId,backupList);
     }
 
+    public List<Backup> getBackupForNode(int nodeChordId){
+        if(backups.containsKey(nodeChordId)){
+            return backups.get(nodeChordId);
+        }
+        return null;
+    }
+
+    public void removeBackupsForNode(int nodeChordId){
+        backups.remove(nodeChordId);
+    }
+
     public void addToMyBackupLocations(int fileChordId,int nodeChordId){
         myBackupLocations.put(fileChordId, nodeChordId);
     }

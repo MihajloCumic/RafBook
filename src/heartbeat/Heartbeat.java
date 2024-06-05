@@ -5,6 +5,7 @@ import app.AppConfig;
 import app.Cancellable;
 import servent.message.HeartbeatRequestMessage;
 import servent.message.RecheckNodeMessage;
+import servent.message.RemoveNodeMessage;
 import servent.message.util.MessageUtil;
 
 
@@ -69,6 +70,8 @@ public class Heartbeat implements Runnable, Cancellable {
                         heartbeatSharedData.setIsSuspicious(false);
                         heartbeatSharedData.setHasResponded(false);
                         heartbeatSharedData.setServentPOrt(-1);
+                        RemoveNodeMessage rnm = new RemoveNodeMessage(AppConfig.myServentInfo.getListenerPort(), AppConfig.chordState.getNextNodePort(), heartbeatSharedData.getServentPort() + "");
+                        MessageUtil.sendMessage(rnm);
                     }else{
                         AppConfig.timestampedErrorPrint("Sve okej");
                     }

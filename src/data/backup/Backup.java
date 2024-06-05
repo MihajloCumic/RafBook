@@ -2,6 +2,11 @@ package data.backup;
 
 
 import data.enums.FileType;
+import data.file.MyFile;
+import reader.Reader;
+import reader.impl.FileReader;
+
+import java.nio.file.Paths;
 
 public class Backup {
     private int chordId;
@@ -9,6 +14,7 @@ public class Backup {
     private String name;
     private boolean isPrivate;
     private FileType fileType;
+    private final Reader reader;
 
     public Backup(String location, String name, boolean isPrivate, FileType fileType, int chordId) {
         this.location = location;
@@ -16,6 +22,15 @@ public class Backup {
         this.isPrivate = isPrivate;
         this.fileType = fileType;
         this.chordId = chordId;
+        this.reader = new FileReader();
+    }
+
+    public MyFile loadBackup(){
+        MyFile myFile = reader.readFile(Paths.get(location));
+        myFile.setPrivate(isPrivate);
+        myFile.setName(name);
+        myFile.setChordId(chordId);
+        return myFile;
     }
 
     public int getChordId() {
