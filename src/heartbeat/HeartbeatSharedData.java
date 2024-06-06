@@ -1,22 +1,26 @@
 package heartbeat;
 
 import app.AppConfig;
+import app.ServentInfo;
+
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HeartbeatSharedData {
     private static volatile HeartbeatSharedData instance;
-    private static final Object mutex = new Object();
-    private int serventPort = -1;
-    private boolean hasResponded = false;
-    private boolean isSuspicious =false;
+    private final ConcurrentHashMap<Integer, Boolean> nodePortHasResponded;
+    private int dataVersion = 0;
 
 
-    private HeartbeatSharedData(){}
+    private HeartbeatSharedData(){
+        this.nodePortHasResponded = new ConcurrentHashMap<>();
+    }
 
 
     public static HeartbeatSharedData getInstance(){
         HeartbeatSharedData result = instance;
         if(instance == null){
-            synchronized (mutex){
+            synchronized (HeartbeatSharedData.class){
                 result = instance;
                 if(result == null){
                     result = instance = new HeartbeatSharedData();
@@ -26,29 +30,32 @@ public class HeartbeatSharedData {
         return result;
     }
 
-    public synchronized int getServentPort(){
-        serventPort = AppConfig.chordState.getNextServentPort();
-        return serventPort;
+    public synchronized void refreshNodesToMonitor(){
+        ServentInfo[] successors = AppConfig.chordState.getSuccessorTable();
+        if(successors == null || successors.length == 0) return;
+        nodePortHasResponded.clear();
+        for (ServentInfo successor : successors) {
+            if(successor == null) continue;
+            nodePortHasResponded.put(successor.getListenerPort(), false);
+        }
+        dataVersion++;
     }
 
-    public synchronized void setServentPOrt(int port){
-        serventPort = port;
+    public synchronized Set<Integer> nodePortsToMonitor(){
+        return nodePortHasResponded.keySet();
     }
 
-    public synchronized boolean getHasResponded(){
-        return hasResponded;
+    public synchronized void hasResponded(Integer nodePort){
+        if(nodePortHasResponded.containsKey(nodePort)){
+            nodePortHasResponded.put(nodePort, true);
+        }
     }
 
-    public synchronized void setHasResponded(boolean hasResponded){
-        this.hasResponded = hasResponded;
-    }
-    public synchronized boolean getIsSuspicious(){
-        return isSuspicious;
+    public synchronized ConcurrentHashMap<Integer, Boolean> getNodePortHasResponded(){
+        return nodePortHasResponded;
     }
 
-    public synchronized void setIsSuspicious(boolean isSuspicious){
-        this.isSuspicious = isSuspicious;
-        AppConfig.chordState.setIsSuspiciousByPort(serventPort);
-        notifyAll();
+    public synchronized int getDataVersion() {
+        return dataVersion;
     }
 }

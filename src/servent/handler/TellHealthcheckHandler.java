@@ -15,16 +15,9 @@ public class TellHealthcheckHandler implements MessageHandler{
     @Override
     public void run() {
         if(clientMessage.getMessageType() == MessageType.TELL_HEALTH_CHECK){
-           HeartbeatSharedData sharedData =  HeartbeatSharedData.getInstance();
-           int port = clientMessage.getSenderPort();
-           if(sharedData.getServentPort() == port){
-               AppConfig.timestampedErrorPrint("Node on port: " + port + " is healthy.");
-               synchronized (sharedData){
-                   sharedData.setIsSuspicious(false);
-               }
-               return;
-           }
-            AppConfig.timestampedErrorPrint("Monitoring node on port: " + sharedData.getServentPort() + ", not " + port);
+            AppConfig.timestampedErrorPrint("TELL_HEALTH_CHECK");
+            HeartbeatSharedData sharedData = HeartbeatSharedData.getInstance();
+            sharedData.hasResponded(clientMessage.getSenderPort());
         }else{
             AppConfig.timestampedErrorPrint("Ask healthcheck handler got message that is not TELL_HEALTH_CHECK");
         }

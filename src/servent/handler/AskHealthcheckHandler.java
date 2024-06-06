@@ -16,7 +16,7 @@ public class AskHealthcheckHandler implements MessageHandler{
     @Override
     public void run() {
         if(clientMessage.getMessageType() == MessageType.ASK_HEALTH_CHECK){
-            AppConfig.timestampedErrorPrint("am i healthy?");
+            AppConfig.timestampedErrorPrint("ASK_HEALTH_CHECK");
             TellHealthcheckMessage thm = new TellHealthcheckMessage(clientMessage.getReceiverPort(), clientMessage.getSenderPort());
             MessageUtil.sendMessage(thm);
         }else{

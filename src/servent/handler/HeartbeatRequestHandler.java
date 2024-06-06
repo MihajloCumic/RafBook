@@ -16,6 +16,7 @@ public class HeartbeatRequestHandler implements MessageHandler{
     @Override
     public void run() {
         if(clientMessage.getMessageType() == MessageType.HEARTBEAT_REQUEST){
+//            AppConfig.timestampedErrorPrint("HEARTBEAT_REQUEST");
             HeartbeatResponseMessage hr = new HeartbeatResponseMessage(clientMessage.getReceiverPort(), clientMessage.getSenderPort());
             MessageUtil.sendMessage(hr);
         }else{

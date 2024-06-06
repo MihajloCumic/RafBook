@@ -14,6 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import data.file.MyFile;
 import data.result.GetResult;
 import data.util.SerializationUtil;
+import heartbeat.HeartbeatSharedData;
 import servent.message.AskGetMessage;
 import servent.message.BackupMessage;
 import servent.message.PutMessage;
@@ -279,7 +280,7 @@ public class ChordState {
 				}
 			}
 		}
-		
+		HeartbeatSharedData.getInstance().refreshNodesToMonitor();
 	}
 
 	public void removeNode(int nodePortToRemove){
