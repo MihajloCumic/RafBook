@@ -1,6 +1,7 @@
 package servent.handler;
 
 import app.AppConfig;
+import app.ChordState;
 import data.file.MyFile;
 import data.util.SerializationUtil;
 import heartbeat.Heartbeat;
@@ -35,11 +36,10 @@ public class WelcomeHandler implements MessageHandler {
 				fileChordIds.add(entry.getKey());
 			}
             try {
-                String msg = SerializationUtil.serialize(fileChordIds);
+                String msg = ChordState.chordHash(clientMessage.getSenderPort()) + ":" + SerializationUtil.serialize(fileChordIds);
 				AppConfig.timestampedErrorPrint("Sending rbm:\n"+ "sender: " + welcomeMsg.getSenderPort());
-				RemoveBackupsMessage rbm = new RemoveBackupsMessage(welcomeMsg.getSenderPort(), AppConfig.chordState.getNextNodePort(), msg);
+				RemoveBackupsMessage rbm = new RemoveBackupsMessage(AppConfig.myServentInfo.getListenerPort(), AppConfig.chordState.getNextNodePort(), msg);
 				MessageUtil.sendMessage(rbm);
-
 			} catch (IOException e) {
                 throw new RuntimeException(e);
             }
