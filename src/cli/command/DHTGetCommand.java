@@ -23,7 +23,7 @@ public class DHTGetCommand implements CLICommand {
 	@Override
 	public void execute(String args) {
 		try {
-			int key = Integer.parseInt(args);
+			int key = args.hashCode();
 			int chordKey = ChordState.chordHash(key);
 			GetResult result = AppConfig.chordState.getValue(chordKey);
 			
@@ -33,7 +33,7 @@ public class DHTGetCommand implements CLICommand {
 				AppConfig.timestampedStandardPrint("No such key: " + key);
 			} else {
 				MyFile myFile = result.getMyFile();
-				AppConfig.timestampedStandardPrint(key + ": " + myFile.getName());
+				AppConfig.timestampedStandardPrint(myFile.getChordId() + ": " + myFile.getName());
 				writer.saveFile(AppConfig.root.toString() + downloadFolder, myFile);
 				AppConfig.timestampedStandardPrint("Saved file:" + myFile.getName() + " in /Downloads");
 
@@ -42,5 +42,7 @@ public class DHTGetCommand implements CLICommand {
 			AppConfig.timestampedErrorPrint("Invalid argument for dht_get: " + args + ". Should be key, which is an int.");
 		}
 	}
+
+
 
 }

@@ -27,14 +27,15 @@ public class DHTPutCommand implements CLICommand {
 	public void execute(String args) {
 		String[] splitArgs = args.split(" ");
 		
-		if (splitArgs.length == 3) {
+		if (splitArgs.length == 2) {
 			boolean isPrivate = splitArgs[0].equals("private");
-			int key = 0;
+			//int key = 0;
 			try {
-				key = Integer.parseInt(splitArgs[1]);
-				Path path = validateAndGetPath(splitArgs[2]);
+				//key = Integer.parseInt(splitArgs[1]);
+				Path path = validateAndGetPath(splitArgs[1]);
 				MyFile file = fileReader.readFile(path);
 				file.setPrivate(isPrivate);
+				int key = file.getName().hashCode();
 				int chordKey = ChordState.chordHash(key);
 				file.setChordId(chordKey);
 				AppConfig.chordState.putValue(chordKey, file);
@@ -47,10 +48,6 @@ public class DHTPutCommand implements CLICommand {
 		} else {
 			AppConfig.timestampedErrorPrint("Invalid arguments for put");
 		}
-
-	}
-
-	private void makeBackup(MyFile file){
 
 	}
 
