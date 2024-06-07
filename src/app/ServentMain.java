@@ -7,6 +7,7 @@ import servent.SimpleServentListener;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Describes the procedure for starting a single Servent
@@ -81,6 +82,7 @@ public class ServentMain {
 		Path path = AppConfig.root;
         try {
             Files.createDirectories(path);
+			Files.createDirectories(Paths.get(path.toString() +"/Downloads"));
 			return true;
         } catch (IOException e) {
             return false;

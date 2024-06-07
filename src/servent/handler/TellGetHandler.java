@@ -1,18 +1,24 @@
 package servent.handler;
 
 import app.AppConfig;
+import data.file.MyFile;
 import data.result.GetResult;
 import data.util.SerializationUtil;
 import servent.message.Message;
 import servent.message.MessageType;
+import writer.Writer;
+import writer.impl.FileWriter;
 
 import java.io.IOException;
 
 public class TellGetHandler implements MessageHandler {
 
 	private Message clientMessage;
+	private final Writer writer;
+	private final String downloadFolder = "/Downloads";
 	
 	public TellGetHandler(Message clientMessage) {
+		this.writer = new FileWriter();
 		this.clientMessage = clientMessage;
 	}
 	
@@ -29,6 +35,10 @@ public class TellGetHandler implements MessageHandler {
 						AppConfig.timestampedStandardPrint("No such key: " + key);
 					} else {
 						AppConfig.timestampedStandardPrint(resultAsString(getResult, key));
+						MyFile myFile = getResult.getMyFile();
+						AppConfig.timestampedStandardPrint(key + ": " + myFile.getName());
+						writer.saveFile(AppConfig.root.toString() + downloadFolder, myFile);
+						AppConfig.timestampedStandardPrint("Saved file:" + myFile.getName() + " in /Downloads");
 					}
 				} catch (NumberFormatException e) {
 					AppConfig.timestampedErrorPrint("Got TELL_GET message with bad text: " + clientMessage.getMessageText());

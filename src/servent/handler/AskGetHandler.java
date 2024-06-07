@@ -29,12 +29,8 @@ public class AskGetHandler implements MessageHandler {
 					GetResult getResult = new GetResult(-1, null);
 					
 					if (valueMap.containsKey(key)) {
+						AppConfig.timestampedStandardPrint("From Ask");
 						getResult.setMyFile(valueMap.get(key));
-						if(getResult.getMyFile().isPrivate()){
-							AccessDeniedMessage adm = new AccessDeniedMessage(AppConfig.myServentInfo.getListenerPort(), clientMessage.getSenderPort(), "Cannot acces file with id: " + key);
-							MessageUtil.sendMessage(adm);
-							return;
-						}
 						getResult.setResStatus(1);
 					}
 					String getResultStr = SerializationUtil.serialize(getResult);
