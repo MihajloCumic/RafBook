@@ -91,6 +91,25 @@ public class ChordState {
 		//set a temporary pointer to next node, for sending of update message
 		successorTable[0] = new ServentInfo("localhost", welcomeMsg.getSenderPort());
 		this.valueMap = welcomeMsg.getValues();
+
+		if(!this.valueMap.isEmpty()){
+			for(Map.Entry<Integer, MyFile> entry: this.valueMap.entrySet()){
+                String messageText = null;
+                try {
+                    messageText = "1:" + SerializationUtil.serialize(entry.getValue());
+					int backupNodePort = getNextNodePort();
+					int backupNodeChordId = ChordState.chordHash(backupNodePort);
+
+					AppConfig.backupMap.addToMyBackupLocations(entry.getKey(), backupNodeChordId);
+
+					BackupMessage backupMessage = new BackupMessage(AppConfig.myServentInfo.getListenerPort(), backupNodePort, messageText);
+					MessageUtil.sendMessage(backupMessage);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+			}
+		}
 		
 		//tell bootstrap this node is not a collider
 		try {
@@ -353,11 +372,12 @@ public class ChordState {
 	 */
 	public void putValue(int key, MyFile value) {
 		if (isKeyMine(key)) {
+			if(valueMap.containsKey(key)) return;
 			valueMap.put(key, value);
             try {
-                String messageText = SerializationUtil.serialize(value);
+                String messageText = "1:" + SerializationUtil.serialize(value);
 
-				int backupNodePort = getRandomHealthyNodePort();
+				int backupNodePort = getNextNodePort();
 				int backupNodeChordId = ChordState.chordHash(backupNodePort);
 
 				AppConfig.backupMap.addToMyBackupLocations(key, backupNodeChordId);

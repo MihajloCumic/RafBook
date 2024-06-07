@@ -43,6 +43,9 @@ public class BackupMap {
         }else{
             backupList = new ArrayList<>();
         }
+        for(Backup b: backupList){
+            if(b.getChordId() == backup.getChordId()) return;
+        }
         backupList.add(backup);
         backups.put(nodeChordId,backupList);
     }
