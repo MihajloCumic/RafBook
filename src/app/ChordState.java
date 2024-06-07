@@ -12,13 +12,11 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import data.file.MyFile;
+import data.result.DeleteFIleResult;
 import data.result.GetResult;
 import data.util.SerializationUtil;
 import heartbeat.HeartbeatSharedData;
-import servent.message.AskGetMessage;
-import servent.message.BackupMessage;
-import servent.message.PutMessage;
-import servent.message.WelcomeMessage;
+import servent.message.*;
 import servent.message.util.MessageUtil;
 
 /**
@@ -423,6 +421,21 @@ public class ChordState {
 		return new GetResult(-2, null);
 	}
 
+	public DeleteFIleResult deleteFile(int key){
+		if(isKeyMine(key)){
+			if(valueMap.containsKey(key)){
+				MyFile myFile = valueMap.get(key);
+				valueMap.remove(key);
+				return new DeleteFIleResult(1, myFile.getName(), AppConfig.myServentInfo.getListenerPort());
+			}
+			return new DeleteFIleResult(-1, null, 0);
+		}
+		ServentInfo nextNode = getNextNodeForKey(key);
+		AskDeleteMessage adm = new AskDeleteMessage(AppConfig.myServentInfo.getListenerPort(), nextNode.getListenerPort(), String.valueOf(key));
+		MessageUtil.sendMessage(adm);
+		return new DeleteFIleResult(-2, null, 0);
+	}
+
 	public GetResult getMyFileBYChordId(int fileChordId){
 		if (valueMap.containsKey(fileChordId)) {
 			return new GetResult(1, valueMap.get(fileChordId));
@@ -456,6 +469,10 @@ public class ChordState {
 				serventInfo.setSuspicious(true);
 			}
 		}
+	}
+
+	public void removeFromValueMap(int key){
+		valueMap.remove(key);
 	}
 
 }

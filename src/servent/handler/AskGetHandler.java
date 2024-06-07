@@ -29,7 +29,6 @@ public class AskGetHandler implements MessageHandler {
 					GetResult getResult = new GetResult(-1, null);
 					
 					if (valueMap.containsKey(key)) {
-						AppConfig.timestampedStandardPrint("From Ask");
 						getResult.setMyFile(valueMap.get(key));
 						getResult.setResStatus(1);
 					}
