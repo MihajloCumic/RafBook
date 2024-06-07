@@ -25,20 +25,28 @@ public class DHTPutCommand implements CLICommand {
 
 	@Override
 	public void execute(String args) {
+		if(args == null || args.isEmpty()){
+			AppConfig.timestampedErrorPrint("dht_put commmand must have arguments.");
+			return;
+		}
 		String[] splitArgs = args.split(" ");
 		
 		if (splitArgs.length == 2) {
-			boolean isPrivate = splitArgs[0].equals("private");
+			boolean isPrivate = false;
 			//int key = 0;
 			try {
 				//key = Integer.parseInt(splitArgs[1]);
 				Path path = validateAndGetPath(splitArgs[1]);
 				MyFile file = fileReader.readFile(path);
 				file.setPrivate(isPrivate);
-				int key = file.getName().hashCode();
-				int chordKey = ChordState.chordHash(key);
-				file.setChordId(chordKey);
-				AppConfig.chordState.putValue(chordKey, file);
+				int key = Integer.parseInt(splitArgs[0]);
+				//int chordKey = ChordState.chordHash(key);
+				if(key > 64 || key < 0){
+					AppConfig.timestampedErrorPrint("Key must be between 0 and 64.");
+					return;
+				}
+				file.setChordId(key);
+				AppConfig.chordState.putValue(key, file);
 			} catch (NumberFormatException e) {
 				AppConfig.timestampedErrorPrint("Invalid key and value pair. Both should be ints. 0 <= key <= " + ChordState.CHORD_SIZE
 						+ ". 0 <= value.");

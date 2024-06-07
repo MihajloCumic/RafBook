@@ -426,6 +426,9 @@ public class ChordState {
 			if(valueMap.containsKey(key)){
 				MyFile myFile = valueMap.get(key);
 				valueMap.remove(key);
+				AppConfig.backupMap.removeFileFromMyBackupLocations(key);
+				RemoveFilesFromBackupsMessage rfbm = new RemoveFilesFromBackupsMessage(AppConfig.myServentInfo.getListenerPort(), getNextNodePort(), String.valueOf(key));
+				MessageUtil.sendMessage(rfbm);
 				return new DeleteFIleResult(1, myFile.getName(), AppConfig.myServentInfo.getListenerPort());
 			}
 			return new DeleteFIleResult(-1, null, 0);

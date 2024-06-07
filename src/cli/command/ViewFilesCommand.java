@@ -14,6 +14,10 @@ public class ViewFilesCommand implements CLICommand{
 
     @Override
     public void execute(String args) {
+        if(args == null || args.isEmpty()){
+            AppConfig.timestampedErrorPrint("view-files command must have argument.");
+            return;
+        }
         String[] splitArgs = args.split(":", 2);
         if(splitArgs.length != 2) AppConfig.timestampedErrorPrint("Invalid arguments for view-files command.");
 

@@ -80,6 +80,10 @@ public class BackupMap {
         myBackupLocations.put(fileChordId, nodeChordId);
     }
 
+    public void removeFileFromMyBackupLocations(int fileKey){
+        myBackupLocations.remove(fileKey);
+    }
+
     public void removeFromMyBackupLocations(int nodeChordId){
         for(Map.Entry<Integer, Integer> entry: myBackupLocations.entrySet()){
             if(entry.getValue() == nodeChordId){

@@ -5,10 +5,7 @@ import app.ServentInfo;
 import data.file.MyFile;
 import data.result.DeleteFIleResult;
 import data.util.SerializationUtil;
-import servent.message.AskDeleteMessage;
-import servent.message.Message;
-import servent.message.MessageType;
-import servent.message.TellDeleteMessage;
+import servent.message.*;
 import servent.message.util.MessageUtil;
 
 import java.io.IOException;
@@ -34,6 +31,10 @@ public class AskDeleteHandler implements MessageHandler{
                     res.setResStatus(1);
                     res.setFileName(myFile.getName());
                     res.setNodePort(AppConfig.myServentInfo.getListenerPort());
+
+                    AppConfig.backupMap.removeFileFromMyBackupLocations(key);
+                    RemoveFilesFromBackupsMessage rfbm = new RemoveFilesFromBackupsMessage(AppConfig.myServentInfo.getListenerPort(), AppConfig.chordState.getNextNodePort(), String.valueOf(key));
+                    MessageUtil.sendMessage(rfbm);
                 }
                 try {
                     String resString = SerializationUtil.serialize(res);

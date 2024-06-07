@@ -1,6 +1,9 @@
 package data.result;
 
-public class DeleteFIleResult {
+import java.io.Serializable;
+
+public class DeleteFIleResult implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int resStatus;
     private String fileName;
     private int nodePort;

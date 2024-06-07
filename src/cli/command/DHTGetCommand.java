@@ -23,9 +23,10 @@ public class DHTGetCommand implements CLICommand {
 	@Override
 	public void execute(String args) {
 		try {
-			int key = args.hashCode();
-			int chordKey = ChordState.chordHash(key);
-			GetResult result = AppConfig.chordState.getValue(chordKey);
+			//int key = Math.abs(args.hashCode());
+			//int chordKey = ChordState.chordHash(key);
+			int key = Integer.parseInt(args);
+			GetResult result = AppConfig.chordState.getValue(key);
 			
 			if (result.getResStatus() == -2) {
 				AppConfig.timestampedStandardPrint("Please wait...");

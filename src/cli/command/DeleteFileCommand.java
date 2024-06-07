@@ -15,8 +15,9 @@ public class DeleteFileCommand implements CLICommand{
             AppConfig.timestampedErrorPrint("Invalid input for delete command.");
             return;
         }
-        int fileChordId = args.hashCode();
-        DeleteFIleResult res = AppConfig.chordState.deleteFile(fileChordId);
+//        int fileChordId = Math.abs(args.hashCode());
+        int key = Integer.parseInt(args);
+        DeleteFIleResult res = AppConfig.chordState.deleteFile(key);
         if(res.getResStatus() == -2){
             AppConfig.timestampedStandardPrint("Please wait...");
             return;
