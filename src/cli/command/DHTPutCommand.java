@@ -20,13 +20,13 @@ public class DHTPutCommand implements CLICommand {
 
 	@Override
 	public String commandName() {
-		return "dht_put";
+		return "put";
 	}
 
 	@Override
 	public void execute(String args) {
 		if(args == null || args.isEmpty()){
-			AppConfig.timestampedErrorPrint("dht_put commmand must have arguments.");
+			AppConfig.timestampedErrorPrint("put commmand must have arguments.");
 			return;
 		}
 		String[] splitArgs = args.split(" ");

@@ -17,7 +17,7 @@ public class DHTGetCommand implements CLICommand {
 
 	@Override
 	public String commandName() {
-		return "dht_get";
+		return "get";
 	}
 
 	@Override

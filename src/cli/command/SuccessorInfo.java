@@ -7,7 +7,7 @@ public class SuccessorInfo implements CLICommand {
 
 	@Override
 	public String commandName() {
-		return "successor_info";
+		return "successor-info";
 	}
 
 	@Override
