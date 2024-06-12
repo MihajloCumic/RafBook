@@ -19,7 +19,10 @@ public class ViewFilesCommand implements CLICommand{
             return;
         }
         String[] splitArgs = args.split(":", 2);
-        if(splitArgs.length != 2) AppConfig.timestampedErrorPrint("Invalid arguments for view-files command.");
+        if(splitArgs.length != 2) {
+            AppConfig.timestampedErrorPrint("Invalid arguments for view-files command.");
+            return;
+        }
 
         try{
             int port = Integer.parseInt(splitArgs[1]);

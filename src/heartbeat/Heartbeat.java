@@ -111,22 +111,6 @@ public class Heartbeat implements Runnable, Cancellable {
         return true;
     }
 
-//    List<Integer> allHealthyNodes = AppConfig.chordState.getAllHealthyNodes();
-//            if(allHealthyNodes.isEmpty()){
-//                AppConfig.timestampedErrorPrint("Poslednji cvor.");
-//                //last node
-//                return false;
-//            }
-//
-//            AppConfig.timestampedErrorPrint("Imam kome");
-//            int healthyNodePort = AppConfig.chordState.getRandomHealthyNodePort();
-//            AppConfig.timestampedStandardPrint("Saljem recheck zahtev: " + healthyNodePort);
-//            for(Integer suspicious: notRespondedNodePorts) {
-//                RecheckNodeMessage rnm = new RecheckNodeMessage(AppConfig.myServentInfo.getListenerPort(), healthyNodePort, suspicious + "");
-//                MessageUtil.sendMessage(rnm);
-//            }
-//            return true;
-
     private void removeNodes(Map<Integer, Boolean> allMonitoredNodes){
         List<Integer> toRemoveNodePorts = new ArrayList<>();
         List<Integer> healthyNodePorts  = AppConfig.chordState.getAllHealthyNodes();
@@ -148,6 +132,11 @@ public class Heartbeat implements Runnable, Cancellable {
                 AppConfig.timestampedStandardPrint("Saljem da se ukloni cvor: " + nodeToRemove + " sa cvora: " + healthyNode);
                 RemoveNodeMessage rnm = new RemoveNodeMessage(AppConfig.myServentInfo.getListenerPort(), healthyNode, nodeToRemove+"");
                 MessageUtil.sendMessage(rnm);
+            }
+
+        }
+        for (Integer nodeToRemove: toRemoveNodePorts){
+            for(Integer healthyNode: healthyNodePorts){
                 LoadBackupsMessage lbm = new LoadBackupsMessage(AppConfig.myServentInfo.getListenerPort(), healthyNode, nodeToRemove + "");
                 MessageUtil.sendMessage(lbm);
             }
