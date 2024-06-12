@@ -33,11 +33,8 @@ public class RemoveBackupsHandler implements MessageHandler{
                 }
                 List<Integer> filesToRemove = (List<Integer>) SerializationUtil.deserialize(splitMsg[1]);
                 int nodeChordId = Integer.parseInt(splitMsg[0]);
-                AppConfig.timestampedErrorPrint("Removing backups of node: " + nodeChordId);
                 AppConfig.backupMap.removeBackupsForNode(nodeChordId, filesToRemove);
                 RemoveBackupsMessage rbm = new RemoveBackupsMessage(clientMessage.getSenderPort(), AppConfig.chordState.getNextNodePort(), clientMessage.getMessageText());
-
-//                RemoveBackupsMessage rbm = new RemoveBackupsMessage(clientMessage.getSenderPort(), AppConfig.chordState.getNextNodePort(), clientMessage.getMessageText());
                 MessageUtil.sendMessage(rbm);
 
             } catch (IOException | ClassNotFoundException e) {

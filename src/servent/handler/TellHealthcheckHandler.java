@@ -18,6 +18,7 @@ public class TellHealthcheckHandler implements MessageHandler{
             AppConfig.timestampedErrorPrint("TELL_HEALTH_CHECK");
             HeartbeatSharedData sharedData = HeartbeatSharedData.getInstance();
             sharedData.hasResponded(clientMessage.getSenderPort());
+            AppConfig.chordState.isNotSuspicious(clientMessage.getSenderPort());
         }else{
             AppConfig.timestampedErrorPrint("Ask healthcheck handler got message that is not TELL_HEALTH_CHECK");
         }

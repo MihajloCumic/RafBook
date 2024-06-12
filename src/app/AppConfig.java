@@ -25,6 +25,8 @@ public class AppConfig {
 	public static ServentInfo myServentInfo;
 	public static Path root;
 	public static BackupMap backupMap;
+	public static int lowWaitingTime;
+	public static int highWaitingTime;
 	
 	/**
 	 * Print a message to stdout with a timestamp
@@ -98,6 +100,13 @@ public class AppConfig {
 			timestampedErrorPrint("Problem reading servent_count. Exiting...");
 			System.exit(0);
 		}
+		try{
+			lowWaitingTime = Integer.parseInt(properties.getProperty("low_waiting_time"));
+			highWaitingTime = Integer.parseInt(properties.getProperty("high_waiting_time"));
+		}catch (NumberFormatException e){
+			timestampedErrorPrint("Problem reading low_waiting_time or high_waiting_time. Exiting...");
+			System.exit(0);
+		}
 		
 		try {
 			int chordSize = Integer.parseInt(properties.getProperty("chord_size"));
@@ -109,6 +118,8 @@ public class AppConfig {
 			timestampedErrorPrint("Problem reading chord_size. Must be a number that is a power of 2. Exiting...");
 			System.exit(0);
 		}
+
+
 		
 		String portProperty = "servent"+serventId+".port";
 		

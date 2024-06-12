@@ -95,7 +95,7 @@ public class BackupMap {
                 MyFile myFile = getResult.getMyFile();
                 try {
                     String fileAsString = SerializationUtil.serialize(myFile);
-                    int backupNodePort = AppConfig.chordState.getRandomHealthyNodePort();
+                    int backupNodePort = AppConfig.chordState.getNextNodePort();
                     int backupNodeChordId = ChordState.chordHash(backupNodePort);
 
                     BackupMessage backupMessage = new BackupMessage(AppConfig.myServentInfo.getListenerPort(), backupNodePort, fileAsString);

@@ -63,7 +63,7 @@ public class ServentMain {
 		Thread listenerThread = new Thread(simpleListener);
 		listenerThread.start();
 
-		Heartbeat heartbeat = new Heartbeat(3000);
+		Heartbeat heartbeat = new Heartbeat(AppConfig.lowWaitingTime, AppConfig.highWaitingTime);
 
 		CLIParser cliParser = new CLIParser(simpleListener, heartbeat);
 		Thread cliThread = new Thread(cliParser);

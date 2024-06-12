@@ -37,7 +37,6 @@ public class WelcomeHandler implements MessageHandler {
 			}
             try {
                 String msg = ChordState.chordHash(clientMessage.getSenderPort()) + ":" + SerializationUtil.serialize(fileChordIds);
-				AppConfig.timestampedErrorPrint("Sending rbm:\n"+ "sender: " + welcomeMsg.getSenderPort());
 				RemoveBackupsMessage rbm = new RemoveBackupsMessage(AppConfig.myServentInfo.getListenerPort(), AppConfig.chordState.getNextNodePort(), msg);
 				MessageUtil.sendMessage(rbm);
 			} catch (IOException e) {

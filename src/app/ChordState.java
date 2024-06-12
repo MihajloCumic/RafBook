@@ -312,6 +312,7 @@ public class ChordState {
 		allNodeInfo.remove(serventInfoToRemove);
 		updateAllNodesAndSuccessorTable();
 		AppConfig.backupMap.removeFromMyBackupLocations(ChordState.chordHash(nodePortToRemove));
+		AppConfig.timestampedErrorPrint("Removed node: "  + serventInfoToRemove.getListenerPort());
 	}
 
 	/**
@@ -466,10 +467,27 @@ public class ChordState {
 		return -1;
 	}
 
+	public List<Integer> getAllHealthyNodes(){
+		List<Integer> healthyNodes = new ArrayList<>();
+		for(ServentInfo serventInfo: allNodeInfo){
+			if(serventInfo.isSuspicious() || serventInfo.getChordId() == AppConfig.myServentInfo.getChordId()) continue;
+			healthyNodes.add(serventInfo.getListenerPort());
+		}
+		return healthyNodes;
+	}
+
 	public void setIsSuspiciousByPort(int port){
 		for(ServentInfo serventInfo: allNodeInfo){
 			if(serventInfo.getListenerPort() == port){
 				serventInfo.setSuspicious(true);
+			}
+		}
+	}
+
+	public void isNotSuspicious(int port){
+		for(ServentInfo serventInfo: allNodeInfo){
+			if(serventInfo.getListenerPort() == port){
+				serventInfo.setSuspicious(false);
 			}
 		}
 	}

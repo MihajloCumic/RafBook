@@ -26,15 +26,13 @@ public class RemoveNodeHandler implements MessageHandler{
         if(clientMessage.getMessageType() == MessageType.REMOVE_NODE){
             if(AppConfig.myServentInfo.getListenerPort() == clientMessage.getSenderPort()){
                 removeNodeFromBootstrap(clientMessage.getMessageText());
-                LoadBackupsMessage lbm = new LoadBackupsMessage(clientMessage.getSenderPort(), AppConfig.chordState.getNextNodePort(), clientMessage.getMessageText());
-                MessageUtil.sendMessage(lbm);
-                AppConfig.timestampedStandardPrint("Sent loading backup message from remove node.");
+//                LoadBackupsMessage lbm = new LoadBackupsMessage(clientMessage.getSenderPort(), AppConfig.chordState.getNextNodePort(), clientMessage.getMessageText());
+//                MessageUtil.sendMessage(lbm);
                 return;
             }
             try {
                 int nodeToRemovePort = Integer.parseInt(clientMessage.getMessageText());
                 AppConfig.chordState.removeNode(nodeToRemovePort);
-                AppConfig.timestampedStandardPrint("Removed node: " + nodeToRemovePort);
             }catch (NumberFormatException e){
                 AppConfig.timestampedErrorPrint(e.getLocalizedMessage());
             }

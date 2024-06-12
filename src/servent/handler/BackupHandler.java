@@ -29,12 +29,10 @@ public class BackupHandler implements MessageHandler{
                     return;
                 }
                 int replicaCnt = Integer.parseInt(splitMessage[0]);
-                AppConfig.timestampedErrorPrint("Replica: " + replicaCnt);
                 MyFile myFile =(MyFile) SerializationUtil.deserialize(splitMessage[1]);
                 AppConfig.backupMap.backupFile(myFile, ChordState.chordHash(clientMessage.getSenderPort()));
                 AppConfig.timestampedStandardPrint("Backed up file: " + myFile.getName() + " from node: " + clientMessage.getSenderPort());
                 if(clientMessage.getSenderPort() != AppConfig.chordState.getNextNodePort() && replicaCnt < 3){
-                    AppConfig.timestampedErrorPrint("Usao u deo sa slanjem backup-ova.");
                     int secondBackupNodePort = AppConfig.chordState.getNextNodePort();
                     BackupMessage bm = new BackupMessage(clientMessage.getSenderPort(), secondBackupNodePort, ++replicaCnt + ":" + splitMessage[1]);
                     MessageUtil.sendMessage(bm);

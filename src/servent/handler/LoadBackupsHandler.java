@@ -34,10 +34,9 @@ public class LoadBackupsHandler implements MessageHandler{
                     }
                 }
                 AppConfig.backupMap.removeBackupsForNode(nodeChordId);
-                if(AppConfig.myServentInfo.getListenerPort() == clientMessage.getSenderPort()) return;
-                LoadBackupsMessage lbm = new LoadBackupsMessage(clientMessage.getSenderPort(), AppConfig.chordState.getNextNodePort(), clientMessage.getMessageText());
-                MessageUtil.sendMessage(lbm);
-                AppConfig.timestampedStandardPrint("Sent loadbackup message");
+//                if(AppConfig.myServentInfo.getListenerPort() == clientMessage.getSenderPort()) return;
+//                LoadBackupsMessage lbm = new LoadBackupsMessage(clientMessage.getSenderPort(), AppConfig.chordState.getNextNodePort(), clientMessage.getMessageText());
+//                MessageUtil.sendMessage(lbm);
             }catch (NumberFormatException e){
                 AppConfig.timestampedErrorPrint(e.getLocalizedMessage());
             }
