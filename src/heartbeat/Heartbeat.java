@@ -115,14 +115,11 @@ public class Heartbeat implements Runnable, Cancellable {
         List<Integer> toRemoveNodePorts = new ArrayList<>();
         List<Integer> healthyNodePorts  = AppConfig.chordState.getAllHealthyNodes();
         for(Map.Entry<Integer, Boolean> entry: allMonitoredNodes.entrySet()){
-//            if(entry.getValue()) healthyNodePorts.add(entry.getKey());
             if(entry.getValue()) continue;
             else toRemoveNodePorts.add(entry.getKey());
         }
         if(toRemoveNodePorts.isEmpty()) return;
         if(healthyNodePorts.isEmpty()){
-           //poslednji cvor
-            AppConfig.timestampedErrorPrint("Poslenji cvor iz brisanja cvorova.");
             lastNodeAction(toRemoveNodePorts);
             return;
         }

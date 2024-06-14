@@ -16,7 +16,6 @@ public class RecheckNodeHandler implements MessageHandler{
     @Override
     public void run() {
         if(clientMessage.getMessageType() == MessageType.RECHECK_NODE){
-            AppConfig.timestampedErrorPrint("RECHECK_NODE");
             int port = Integer.parseInt(clientMessage.getMessageText());
             AskHealthcheckMessage ahm = new AskHealthcheckMessage(clientMessage.getSenderPort(), port);
             MessageUtil.sendMessage(ahm);

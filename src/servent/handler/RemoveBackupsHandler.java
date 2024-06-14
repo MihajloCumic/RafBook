@@ -22,7 +22,7 @@ public class RemoveBackupsHandler implements MessageHandler{
     public void run() {
         if(clientMessage.getMessageType() == MessageType.REMOVE_BACKUPS){
             if(AppConfig.myServentInfo.getListenerPort() == clientMessage.getSenderPort()){
-                AppConfig.timestampedErrorPrint("FInished remove backups cycle.");
+                AppConfig.timestampedErrorPrint("Finished remove backups cycle.");
                 return;
             }
             try {

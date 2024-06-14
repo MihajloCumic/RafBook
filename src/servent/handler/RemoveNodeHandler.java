@@ -26,8 +26,6 @@ public class RemoveNodeHandler implements MessageHandler{
         if(clientMessage.getMessageType() == MessageType.REMOVE_NODE){
             if(AppConfig.myServentInfo.getListenerPort() == clientMessage.getSenderPort()){
                 removeNodeFromBootstrap(clientMessage.getMessageText());
-//                LoadBackupsMessage lbm = new LoadBackupsMessage(clientMessage.getSenderPort(), AppConfig.chordState.getNextNodePort(), clientMessage.getMessageText());
-//                MessageUtil.sendMessage(lbm);
                 return;
             }
             try {
