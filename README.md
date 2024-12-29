@@ -13,7 +13,7 @@ This distributed system enables working with ASCII-encoded text files and images
 - **Retrieving Files**: Users can retrieve any file from the distributed system.
 - **Adding Friend Nodes**: The system supports adding new friend nodes to increase efficiency.
 - **Deleting a File**: Deletes a file from the local node (server).
-- **Optimized System Topology**: The organization of the system enables faster searching and retrieval of files.
+- **Optimized System Topology**: The organization of the system enables faster searching and retrieval of files (Distributed Hash Table).
 - **Fault Tolerance**: The system is resistant to failures and provides data recovery options.
 
 This system is designed to ensure reliability and speed in working with distributed files and images.
